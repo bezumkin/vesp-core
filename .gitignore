@@ -1,0 +1,6 @@
+.idea
+vendor
+composer.lock
+clover.xml
+report
+upload
