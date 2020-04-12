@@ -193,7 +193,7 @@ abstract class Controller
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param null $default
      *
      * @return mixed

@@ -2,5 +2,7 @@
 vendor
 composer.lock
 clover.xml
+coverage.xml
 report
 upload
+/coveralls-upload.json

@@ -111,8 +111,8 @@ class File extends Model
     }
 
     /**
-     * @param $filename
-     * @param null $mime
+     * @param string $filename
+     * @param string $mime
      * @return string
      */
     protected static function getSaveName($filename = null, $mime = null)
@@ -139,7 +139,7 @@ class File extends Model
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     protected static function getSavePath($filename)
@@ -170,7 +170,7 @@ class File extends Model
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function getFile()
     {

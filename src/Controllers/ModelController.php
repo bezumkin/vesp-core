@@ -60,7 +60,7 @@ abstract class ModelController extends Controller
      * Add conditions before get an object by id
      *
      * @param Builder $c
-     * @return mixed
+     * @return Builder
      */
     protected function beforeGet($c)
     {
@@ -168,7 +168,7 @@ abstract class ModelController extends Controller
 
     /**
      * @return ResponseInterface
-     * @throws \Exception
+     * @throws Throwable
      */
     public function delete()
     {
@@ -190,7 +190,7 @@ abstract class ModelController extends Controller
 
     /**
      * @param Model $record
-     * @return bool
+     * @return bool|string
      */
     protected function beforeDelete($record)
     {

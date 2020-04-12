@@ -25,7 +25,7 @@ class Image extends ModelGetController
         }
         if (strpos($file->type, 'image/') !== 0) {
             return $this->response->withStatus(422);
-        };
+        }
 
         $server = ServerFactory::create(
             [
