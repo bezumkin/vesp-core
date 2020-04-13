@@ -19,7 +19,7 @@ class ProfileTest extends TestCase
         $model->save();
 
         $request = $this->createRequest('GET', self::URI)
-            ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken(1));
+            ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken($model->id));
         $response = $this->app->handle($request);
         $body = $response->getBody();
 
@@ -35,6 +35,20 @@ class ProfileTest extends TestCase
         $body = $response->getBody();
 
         $this->assertEquals(401, $response->getStatusCode(), $body);
+    }
+
+    public function testPatchSuccess()
+    {
+        $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
+        $model->save();
+
+        $request = $this->createRequest('PATCH', self::URI, ['password' => 'newpassword'])
+            ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken($model->id));
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertArrayHasKey('user', json_decode($body, true), $body);
     }
 
     protected function setUp(): void

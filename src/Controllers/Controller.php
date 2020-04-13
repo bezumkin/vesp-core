@@ -74,7 +74,10 @@ abstract class Controller
         }
 
         $method = strtolower($request->getMethod());
-        $this->setProperties($method === 'get' ? $request->getQueryParams() : $request->getParsedBody());
+        $properties = ($method === 'get') ? $request->getQueryParams() : $request->getParsedBody();
+        if (is_array($properties)) {
+            $this->setProperties($properties);
+        }
 
         $check = $this->checkScope($method);
         if ($check instanceof ResponseInterface) {

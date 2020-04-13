@@ -7,11 +7,20 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Vesp\Helpers\Jwt;
 use Vesp\Models\User;
+use Vesp\Services\Eloquent;
 
 class Auth
 {
-    /** @var Request $request */
-    protected $request;
+    protected $eloquent;
+
+    /**
+     * Autoload database connection into middleware
+     * @param Eloquent $eloquent
+     */
+    public function __construct(Eloquent $eloquent)
+    {
+        $this->eloquent = $eloquent;
+    }
 
     /**
      * @param Request $request
