@@ -153,17 +153,18 @@ abstract class Controller
             }
         }
 
+        $response = $this->response;
         if ($data !== null) {
-            $this->response
+            $response
                 ->getBody()
                 ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
         if (getenv('CORS')) {
-            $this->response
-                ->withHeader('Access-Control-Allow-Origin', '*');
+            $response = $response
+                ->withHeader('Access-Control-Allow-Origin', $this->request->getHeaderLine('HTTP_ORIGIN'));
         }
 
-        return $this->response
+        return $response
             ->withStatus($status, $reason)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
     }
@@ -175,7 +176,7 @@ abstract class Controller
     {
         $response = $this->success();
         if (getenv('CORS')) {
-            $response
+            $response = $response
                 ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization')
                 ->withHeader('Access-Control-Allow-Methods', 'POST, GET, HEAD, OPTIONS, DELETE, PUT, PATCH, UPDATE');
         }
