@@ -3,8 +3,8 @@
 namespace Vesp\Controllers;
 
 use Illuminate\Database\Events\QueryExecuted;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Psr7\Request;
 use Throwable;
 use Vesp\Models\User;
 use Vesp\Services\Eloquent;
@@ -13,7 +13,7 @@ abstract class Controller
 {
     /** @var Eloquent $eloquent */
     protected $eloquent;
-    /** @var RequestInterface $request */
+    /** @var Request $request */
     protected $request;
     /** @var ResponseInterface $response */
     protected $response;
@@ -58,12 +58,12 @@ abstract class Controller
     }
 
     /**
-     * @param RequestInterface $request
+     * @param Request $request
      * @param ResponseInterface $response
      * @return ResponseInterface
      * @expectedException
      */
-    public function process(RequestInterface $request, ResponseInterface $response)
+    public function process(Request $request, ResponseInterface $response)
     {
         $this->request = $request;
         $this->response = $response;

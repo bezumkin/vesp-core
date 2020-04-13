@@ -56,7 +56,7 @@ class ModelControllerTest extends TestCase
     {
         (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
 
-        $request = $this->createRequest('GET', self::URI, ['id' => 1]);
+        $request = $this->createRequest('GET', self::URI . '/1');
         $response = $this->app->handle($request);
         $body = $response->getBody();
 
@@ -162,6 +162,7 @@ class ModelControllerTest extends TestCase
     {
         parent::setUp();
         $this->app->any(self::URI, [ModelController::class, 'process']);
+        $this->app->get(self::URI . '/{id}', [ModelController::class, 'process']);
 
         (new UserRole(['title' => 'title', 'scope' => ['test']]))->save();
     }

@@ -5,6 +5,7 @@ namespace Vesp\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Routing\RouteContext;
 use Throwable;
 
 abstract class ModelController extends Controller
@@ -22,7 +23,10 @@ abstract class ModelController extends Controller
         $class = new $this->model();
         /** @var Builder $c */
         $c = $class->query();
-        if ($id = $this->getProperty($this->primaryKey)) {
+
+        $routeContext = RouteContext::fromRequest($this->request);
+        $route = $routeContext->getRoute();
+        if ($id = $route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey))) {
             $c = $this->beforeGet($c);
             if ($record = $c->find($id)) {
                 $data = $this->prepareRow($record);

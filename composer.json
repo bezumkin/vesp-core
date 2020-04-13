@@ -1,57 +1,57 @@
 {
-  "name": "vesp/core",
-  "type": "library",
-  "license": "MIT",
-  "description": "Vesp core library to make backend simple",
-  "authors": [
-    {
-      "name": "Vasily Naumkin",
-      "email": "bezumkin@yandex.ru"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Vesp\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Vesp\\Tests\\": "tests/"
-    }
-  },
-  "require": {
-      "php": "^7.3",
-      "ext-json": "*",
-      "firebase/php-jwt": "^5.2",
-      "illuminate/database": "^7.4",
-      "illuminate/events": "^7.4",
-      "league/flysystem": "^1.0",
-      "league/glide": "^1.5",
-      "php-di/slim-bridge": "^3.0",
-      "robmorgan/phinx": "^0.11.4",
-      "slim/psr7": "^1.0",
-      "slim/slim": "^4.4",
-      "symfony/dotenv": "^5.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.1",
-    "squizlabs/php_codesniffer": "^3.5",
-    "rregeer/phpunit-coverage-check": "^0.3.1",
-    "satooshi/php-coveralls": "^2.2"
-  },
-  "scripts": {
-    "phpunit": "phpunit -c ./tests/phpunit.xml",
-      "cs-check": "phpcs --colors -p --standard=PSR12 src/ tests/",
-      "cs-fix": "phpcbf --colors -p --standard=PSR12 src/ tests/",
-      "test-text": "phpunit --configuration ./tests/phpunit.xml --coverage-text",
-      "test-html": "phpunit --configuration ./tests/phpunit.xml --coverage-html=report",
-      "test-clover": "phpunit -c ./tests/phpunit.xml --coverage-clover=clover.xml",
-      "coveralls": "php-coveralls --coverage_clover=clover.xml -v -o coveralls-upload.json",
-      "test": [
-          "@test-text",
-          "@cs-fix"
-      ]
-  },
+    "name": "vesp/core",
+    "type": "library",
+    "license": "MIT",
+    "description": "Vesp core library to make backend simple",
+    "authors": [
+        {
+            "name": "Vasily Naumkin",
+            "email": "bezumkin@yandex.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vesp\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vesp\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.3",
+        "ext-json": "*",
+        "firebase/php-jwt": "^5.2",
+        "illuminate/database": "^7.4",
+        "illuminate/events": "^7.4",
+        "league/flysystem": "^1.0",
+        "league/glide": "^1.5",
+        "php-di/slim-bridge": "^3.0",
+        "robmorgan/phinx": "^0.11.4",
+        "slim/psr7": "^1.0",
+        "slim/slim": "^4.4",
+        "symfony/dotenv": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.1",
+        "squizlabs/php_codesniffer": "^3.5",
+        "rregeer/phpunit-coverage-check": "^0.3.1",
+        "satooshi/php-coveralls": "^2.2"
+    },
+    "scripts": {
+        "phpunit": "phpunit -c ./tests/phpunit.xml",
+        "cs-check": "phpcs --colors -p --standard=PSR12 src/ tests/",
+        "cs-fix": "phpcbf --colors -p --standard=PSR12 src/ tests/",
+        "test-text": "phpunit --configuration ./tests/phpunit.xml --coverage-text",
+        "test-html": "phpunit --configuration ./tests/phpunit.xml --coverage-html=report",
+        "test-clover": "phpunit -c ./tests/phpunit.xml --coverage-clover=clover.xml",
+        "coveralls": "php-coveralls --coverage_clover=clover.xml -v -o coveralls-upload.json",
+        "test": [
+            "@test-text",
+            "@cs-fix"
+        ]
+    },
     "config": {
         "sort-packages": true
     }

@@ -2,11 +2,10 @@
 
 namespace Vesp\Middlewares;
 
-use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Throwable;
+use Vesp\Helpers\Jwt;
 use Vesp\Models\User;
 
 class Auth
@@ -33,7 +32,7 @@ class Auth
 
     /**
      * @param Request $request
-     * @return object|bool
+     * @return false|object
      */
     protected function getToken($request)
     {
@@ -52,14 +51,10 @@ class Auth
             }
         }
 
-        if ($token) {
-            try {
-                $decoded = JWT::decode($token, getenv('JWT_SECRET'), ['HS256', 'HS512', 'HS384']);
-                $decoded->token = $token;
+        if ($token && $decoded = JWT::decodeToken($token)) {
+            $decoded->token = $token;
 
-                return $decoded;
-            } catch (Throwable $e) {
-            }
+            return $decoded;
         }
 
         return false;

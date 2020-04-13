@@ -69,6 +69,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $app = Bridge::create();
+        $app->addRoutingMiddleware();
         $this->app = $app;
     }
 }
