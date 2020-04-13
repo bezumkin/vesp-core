@@ -50,12 +50,11 @@ class File extends Model
     }
 
     /**
-     * @param string $dir
      * @return string
      */
-    protected static function getRoot($dir = 'upload')
+    protected static function getRoot()
     {
-        return dirname(dirname(__DIR__)) . '/' . $dir;
+        return getenv('UPLOAD_DIR') ?: (sys_get_temp_dir() . '/upload');
     }
 
     /**

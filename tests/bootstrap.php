@@ -11,3 +11,4 @@ putenv('PROCESSORS_DEBUG=1');
 putenv('JWT_SECRET=' . uniqid());
 putenv('JWT_EXPIRE=1800');
 putenv('PHPUNIT=1');
+putenv('UPLOAD_DIR=' . dirname(__DIR__) . '/upload');

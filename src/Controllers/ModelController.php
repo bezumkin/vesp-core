@@ -24,9 +24,7 @@ abstract class ModelController extends Controller
         /** @var Builder $c */
         $c = $class->query();
 
-        $routeContext = RouteContext::fromRequest($this->request);
-        $route = $routeContext->getRoute();
-        if ($id = $route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey))) {
+        if ($id = $this->getPrimaryKey()) {
             $c = $this->beforeGet($c);
             if ($record = $c->find($id)) {
                 $data = $this->prepareRow($record);
@@ -149,7 +147,7 @@ abstract class ModelController extends Controller
      */
     public function patch()
     {
-        if (!$id = $this->getProperty($this->primaryKey)) {
+        if (!$id = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
         }
         if (!$record = $this->model::query()->find($id)) {
@@ -176,7 +174,7 @@ abstract class ModelController extends Controller
      */
     public function delete()
     {
-        if (!$id = $this->getProperty($this->primaryKey)) {
+        if (!$id = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
         }
         /** @var Model $record */
@@ -201,5 +199,16 @@ abstract class ModelController extends Controller
         return ($record instanceof Model)
             ? true
             : 'Could not save the object';
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getPrimaryKey()
+    {
+        $routeContext = RouteContext::fromRequest($this->request);
+        $route = $routeContext->getRoute();
+
+        return $route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey));
     }
 }

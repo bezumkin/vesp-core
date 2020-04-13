@@ -198,11 +198,11 @@ abstract class Controller
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null|mixed $default
      *
      * @return mixed
      */
-    public function getProperty($key, $default = null)
+    public function getProperty(string $key, $default = null)
     {
         return isset($this->properties[$key])
             ? $this->properties[$key]
@@ -210,18 +210,18 @@ abstract class Controller
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      */
-    public function setProperty($key, $value)
+    public function setProperty(string $key, $value)
     {
         $this->properties[$key] = $value;
     }
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function unsetProperty($key)
+    public function unsetProperty(string $key)
     {
         unset($this->properties[$key]);
     }

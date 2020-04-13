@@ -18,7 +18,7 @@ class Image extends ModelGetController
      */
     public function get()
     {
-        $id = $this->getProperty('id');
+        $id = $this->getPrimaryKey();
         /** @var File $file */
         if (!$id || !$file = File::query()->find($id)) {
             return $this->response->withStatus(404);
@@ -31,7 +31,7 @@ class Image extends ModelGetController
             [
                 'base_url' => $this->request->getUri()->getPath(),
                 'source' => $file->getFilesystem(),
-                'cache' => sys_get_temp_dir() . '/image_cache',
+                'cache' => getenv('CACHE_DIR') ?: (sys_get_temp_dir() . '/image_cache'),
             ]
         );
 
