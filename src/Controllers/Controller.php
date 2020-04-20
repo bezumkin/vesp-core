@@ -4,7 +4,9 @@ namespace Vesp\Controllers;
 
 use Illuminate\Database\Events\QueryExecuted;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
+use Slim\Routing\RouteContext;
 use Throwable;
 use Vesp\Models\User;
 use Vesp\Services\Eloquent;
@@ -17,12 +19,14 @@ abstract class Controller
     protected $request;
     /** @var ResponseInterface $response */
     protected $response;
+    /** @var RouteInterface $route */
+    protected $route;
     /** @var User $user */
     protected $user;
     // Scope required to run controller
     protected $scope;
     // Stat and debug data
-    protected $total_time = 0;
+    protected $start_time = 0;
     protected $query_time = 0;
     protected $queries = 0;
     protected $debug = [];
@@ -35,18 +39,18 @@ abstract class Controller
      */
     public function __construct(Eloquent $eloquent)
     {
-        $eloquent->bootEloquent();
         $this->eloquent = $eloquent;
 
-        if (getenv('PROCESSORS_STAT') || getenv('PROCESSORS_DEBUG')) {
+        if (getenv('CONTROLLERS_STAT') || getenv('CONTROLLERS_DEBUG')) {
+            $this->start_time = microtime(true);
             $eloquent->getDatabaseManager()->listen(
                 function ($query) use (&$count) {
                     /** @var QueryExecuted $query */
-                    if (getenv('PROCESSORS_STAT')) {
+                    if (getenv('CONTROLLERS_STAT')) {
                         $this->query_time += $query->time;
                         $this->queries++;
                     }
-                    if (getenv('PROCESSORS_DEBUG')) {
+                    if (getenv('CONTROLLERS_DEBUG')) {
                         foreach ($query->bindings as $v) {
                             $query->sql = preg_replace('#\?#', is_numeric($v) ? $v : "'{$v}'", $query->sql, 1);
                         }
@@ -65,6 +69,8 @@ abstract class Controller
      */
     public function process(Request $request, ResponseInterface $response)
     {
+        $routeContext = RouteContext::fromRequest($request);
+        $this->route = $routeContext->getRoute();
         $this->request = $request;
         $this->response = $response;
         if ($user = $request->getAttribute('user')) {
@@ -140,15 +146,15 @@ abstract class Controller
     protected function response($data, $status = 200, $reason = '')
     {
         if (is_array($data)) {
-            if (getenv('PROCESSORS_DEBUG')) {
+            if (getenv('CONTROLLERS_DEBUG')) {
                 $data['debug'] = $this->debug;
             }
-            if (getenv('PROCESSORS_STAT')) {
+            if (getenv('CONTROLLERS_STAT')) {
                 $data['stat'] = [
                     'memory' => memory_get_peak_usage(true),
                     'queries' => $this->queries,
                     'query_time' => round(($this->query_time / 1000), 7),
-                    'total_time' => round((microtime(true) - $this->total_time), 7),
+                    'total_time' => round((microtime(true) - $this->start_time), 7),
                 ];
             }
         }

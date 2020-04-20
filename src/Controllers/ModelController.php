@@ -5,7 +5,6 @@ namespace Vesp\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Http\Message\ResponseInterface;
-use Slim\Routing\RouteContext;
 use Throwable;
 
 abstract class ModelController extends Controller
@@ -214,9 +213,6 @@ abstract class ModelController extends Controller
      */
     protected function getPrimaryKey()
     {
-        $routeContext = RouteContext::fromRequest($this->request);
-        $route = $routeContext->getRoute();
-
-        return $route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey));
+        return $this->route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey));
     }
 }
