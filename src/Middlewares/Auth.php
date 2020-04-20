@@ -12,6 +12,7 @@ use Vesp\Services\Eloquent;
 class Auth
 {
     protected $eloquent;
+    protected $model = User::class;
 
     /**
      * Autoload database connection into middleware
@@ -31,7 +32,7 @@ class Auth
     {
         if ($token = $this->getToken($request)) {
             /** @var User $user */
-            if ($user = User::query()->where('active', true)->find($token->id)) {
+            if ($user = (new $this->model())->query()->where('active', true)->find($token->id)) {
                 $request = $request->withAttribute('user', $user);
             }
         }

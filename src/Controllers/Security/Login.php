@@ -9,6 +9,8 @@ use Vesp\Models\User;
 
 class Login extends Controller
 {
+    protected $model = User::class;
+
     /**
      * @return ResponseInterface
      */
@@ -18,7 +20,7 @@ class Login extends Controller
         $password = trim($this->getProperty('password'));
 
         /** @var User $user */
-        if ($user = User::query()->where('username', $username)->first()) {
+        if ($user = (new $this->model())->query()->where('username', $username)->first()) {
             if ($user->verifyPassword($password)) {
                 return !$user->active
                     ? $this->failure('This user is not active', 403)
