@@ -6,3 +6,4 @@ coverage.xml
 report
 upload
 /coveralls-upload.json
+/tests/.phpunit.result.cache

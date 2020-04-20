@@ -36,9 +36,8 @@ abstract class ModelController extends Controller
         }
         $c = $this->beforeCount($c);
         if ($limit = (int)$this->getProperty('limit')) {
-            $page = (int)$this->getProperty('page', 1);
-            $total = $c->count();
-            $c->forPage($page, $limit);
+            $total = $this->getCount($c);
+            $c->forPage((int)$this->getProperty('page', 1), $limit);
         }
         $c = $this->afterCount($c);
         $query = $c->getQuery();
@@ -64,7 +63,7 @@ abstract class ModelController extends Controller
      * @param Builder $c
      * @return Builder
      */
-    protected function beforeGet($c)
+    protected function beforeGet(Builder $c)
     {
         return $c;
     }
@@ -73,7 +72,7 @@ abstract class ModelController extends Controller
      * @param Model $object
      * @return array
      */
-    public function prepareRow($object)
+    public function prepareRow(Model $object)
     {
         return $object->toArray();
     }
@@ -84,9 +83,18 @@ abstract class ModelController extends Controller
      * @param Builder $c
      * @return Builder
      */
-    protected function beforeCount($c)
+    protected function beforeCount(Builder $c)
     {
         return $c;
+    }
+
+    /**
+     * @param Builder $c
+     * @return int
+     */
+    protected function getCount(Builder $c)
+    {
+        return $c->count();
     }
 
     /**
@@ -95,7 +103,7 @@ abstract class ModelController extends Controller
      * @param Builder $c
      * @return Builder
      */
-    protected function afterCount($c)
+    protected function afterCount(Builder $c)
     {
         return $c;
     }
@@ -126,7 +134,7 @@ abstract class ModelController extends Controller
      * @param $record
      * @return bool|string
      */
-    protected function beforeSave($record)
+    protected function beforeSave(Model $record)
     {
         return ($record instanceof Model)
             ? true
@@ -137,7 +145,7 @@ abstract class ModelController extends Controller
      * @param Model $record
      * @return Model
      */
-    protected function afterSave($record)
+    protected function afterSave(Model $record)
     {
         return $record;
     }
@@ -194,7 +202,7 @@ abstract class ModelController extends Controller
      * @param Model $record
      * @return bool|string
      */
-    protected function beforeDelete($record)
+    protected function beforeDelete(Model $record)
     {
         return ($record instanceof Model)
             ? true
