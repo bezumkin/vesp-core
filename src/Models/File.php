@@ -54,7 +54,7 @@ class File extends Model
      */
     protected static function getRoot()
     {
-        return getenv('UPLOAD_DIR') ?: (sys_get_temp_dir() . '/upload');
+        return rtrim(getenv('UPLOAD_DIR'), '/') ?: (sys_get_temp_dir() . '/upload');
     }
 
     /**

@@ -118,7 +118,7 @@ abstract class ModelController extends Controller
             $record->fill($this->getProperties());
             $check = $this->beforeSave($record);
             if ($check !== true) {
-                return $this->failure($check, 422);
+                return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
             }
             $record->save();
             $record = $this->afterSave($record);
@@ -164,7 +164,7 @@ abstract class ModelController extends Controller
             $record->fill($this->getProperties());
             $check = $this->beforeSave($record);
             if ($check !== true) {
-                return $this->failure($check, 422);
+                return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
             }
             $record->save();
             $record = $this->afterSave($record);
@@ -190,7 +190,7 @@ abstract class ModelController extends Controller
         }
         $check = $this->beforeDelete($record);
         if ($check !== true) {
-            return $this->failure($check);
+            return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
         }
         $record->delete();
 
