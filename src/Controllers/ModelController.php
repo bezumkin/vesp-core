@@ -41,19 +41,21 @@ abstract class ModelController extends Controller
         $c = $this->afterCount($c);
         $query = $c->getQuery();
         if (empty($query->{$query->unions ? 'unionOrders' : 'orders'}) && $sort = $this->getProperty('sort')) {
-            $c->orderBy($class->getTable() . '.' . $sort, $this->getProperty('dir') === 'desc' ? 'desc' : 'asc');
+            $c->orderBy($sort, $this->getProperty('dir') === 'desc' ? 'desc' : 'asc');
         }
         $rows = [];
         foreach ($c->get() as $object) {
             $rows[] = $this->prepareRow($object);
         }
 
-        return $this->success(
+        $data = $this->prepareList(
             [
                 'total' => isset($total) ? $total : count($rows),
                 'rows' => $rows,
             ]
         );
+
+        return $this->success($data);
     }
 
     /**
@@ -74,6 +76,15 @@ abstract class ModelController extends Controller
     public function prepareRow(Model $object)
     {
         return $object->toArray();
+    }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    public function prepareList(array $array)
+    {
+        return $array;
     }
 
     /**
