@@ -20,7 +20,7 @@ class Login extends Controller
         $password = trim($this->getProperty('password'));
 
         /** @var User $user */
-        if ($user = (new $this->model())->query()->where('username', $username)->first()) {
+        if ($user = (new $this->model())->newQuery()->where('username', $username)->first()) {
             if ($user->verifyPassword($password)) {
                 return !$user->active
                     ? $this->failure('This user is not active', 403)

@@ -20,12 +20,23 @@ abstract class ModelController extends Controller
     {
         /** @var Model $class */
         $class = new $this->model();
-        /** @var Builder $c */
-        $c = $class->query();
+        $c = $class->newQuery();
 
-        if ($id = $this->getPrimaryKey()) {
+        if ($key = $this->getPrimaryKey()) {
             $c = $this->beforeGet($c);
-            if ($record = $c->find($id)) {
+            if (is_array($key)) {
+                $c->where(
+                    function (Builder $c) use ($key) {
+                        foreach ($key as $item => $value) {
+                            $c->where($item, $value);
+                        }
+                    }
+                );
+                $record = $c->first();
+            } else {
+                $record = $c->find($key);
+            }
+            if ($record) {
                 $data = $this->prepareRow($record);
 
                 return $this->success($data);
@@ -220,10 +231,22 @@ abstract class ModelController extends Controller
     }
 
     /**
-     * @return string|null
+     * @return string|array|null
      */
     protected function getPrimaryKey()
     {
+        if (is_array($this->primaryKey)) {
+            $key = [];
+            foreach ($this->primaryKey as $item) {
+                if (!is_string($item) || !$value = $this->route->getArgument($item, $this->getProperty($item))) {
+                    return null;
+                }
+                $key[$item] = $value;
+            }
+
+            return $key;
+        }
+
         return $this->route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey));
     }
 }

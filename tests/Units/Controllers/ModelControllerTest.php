@@ -4,6 +4,7 @@ namespace Vesp\Tests\Units;
 
 use Vesp\Models\User;
 use Vesp\Models\UserRole;
+use Vesp\Tests\Mock\CompositeModelController;
 use Vesp\Tests\Mock\ModelController;
 use Vesp\Tests\TestCase;
 
@@ -158,11 +159,41 @@ class ModelControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
+    public function testCompositeModelSuccess()
+    {
+        (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
+        $request = $this->createRequest('GET', self::URI . '/composite', ['id' => 1, 'active' => true]);
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertNotNull(json_decode($body)->username, $body);
+    }
+
+    public function testCompositeModelNotFound()
+    {
+        $request = $this->createRequest('GET', self::URI . '/composite', ['id' => 1, 'active' => true]);
+        $response = $this->app->handle($request);
+
+        $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+    }
+
+    public function testCompositeModelWrongKey()
+    {
+        $request = $this->createRequest('GET', self::URI . '/composite', ['active' => true]);
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertNotNull(json_decode($body)->rows, $body);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->app->any(self::URI, [ModelController::class, 'process']);
-        $this->app->get(self::URI . '/{id}', [ModelController::class, 'process']);
+        $this->app->get(self::URI . '/{id:\d+}', [ModelController::class, 'process']);
+        $this->app->get(self::URI . '/composite', [CompositeModelController::class, 'process']);
 
         (new UserRole(['title' => 'title', 'scope' => ['test']]))->save();
     }
