@@ -117,9 +117,11 @@ abstract class Controller
             return $this->failure('Authentication required', 401);
         }
 
-        return $this->user->hasScope($this->scope)
+        $scope = $this->scope . '/' . $method;
+
+        return $this->user->hasScope($scope)
             ? true
-            : $this->failure('You have no "' . $this->scope . '" scope for this action', 403);
+            : $this->failure('You have no "' . $scope . '" scope for this action', 403);
     }
 
     /**
