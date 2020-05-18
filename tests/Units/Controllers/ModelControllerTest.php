@@ -1,6 +1,6 @@
 <?php
 
-namespace Vesp\Tests\Units;
+namespace Vesp\Tests\Units\Controllers;
 
 use Vesp\Models\User;
 use Vesp\Models\UserRole;

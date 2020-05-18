@@ -9,7 +9,6 @@ use Vesp\Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     public function testHasScope()
     {
         $role = new UserRole(['title' => 'test', 'scope' => ['global_scope', 'local_scope/get']]);

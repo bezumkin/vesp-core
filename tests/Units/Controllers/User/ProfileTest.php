@@ -1,6 +1,6 @@
 <?php
 
-namespace Vesp\Tests\Units;
+namespace Vesp\Tests\Units\Controllers\User;
 
 use Vesp\Controllers\User\Profile;
 use Vesp\Helpers\Jwt;

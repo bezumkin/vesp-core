@@ -37,7 +37,6 @@ class User extends Model
         parent::setAttribute($key, $value);
     }
 
-
     /**
      * @param $password
      *
@@ -58,14 +57,17 @@ class User extends Model
         if (!is_array($scopes)) {
             $scopes = [$scopes];
         }
-        $user_scopes = $this->role->scope;
+        $userScopes = $this->role->scope;
 
         foreach ($scopes as $scope) {
             if (strpos($scope, '/') !== false) {
-                if (!in_array($scope, $user_scopes, true) && !in_array(preg_replace('#/.*#', '', $scope), $user_scopes, true)) {
+                if (
+                    !in_array($scope, $userScopes, true) &&
+                    !in_array(preg_replace('#/.*#', '', $scope), $userScopes, true)
+                ) {
                     return false;
                 }
-            } elseif (!in_array($scope, $user_scopes, true)) {
+            } elseif (!in_array($scope, $userScopes, true)) {
                 return false;
             }
         }

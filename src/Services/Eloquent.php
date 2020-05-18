@@ -7,7 +7,6 @@ use Illuminate\Events\Dispatcher;
 
 class Eloquent extends Manager
 {
-
     /**
      * Eloquent constructor.
      */

@@ -19,7 +19,6 @@ class UserRole extends Model
         'scope' => 'array',
     ];
 
-
     /**
      * @return HasMany
      */

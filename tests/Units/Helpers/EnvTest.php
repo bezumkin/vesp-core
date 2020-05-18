@@ -7,7 +7,6 @@ use Vesp\Tests\TestCase;
 
 class EnvTest extends TestCase
 {
-
     public function testFailure()
     {
         $res = Env::loadFile('wrong_file');

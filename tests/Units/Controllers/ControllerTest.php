@@ -1,6 +1,6 @@
 <?php
 
-namespace Vesp\Tests\Units;
+namespace Vesp\Tests\Units\Controllers;
 
 use Vesp\Helpers\Jwt;
 use Vesp\Middlewares\Auth;

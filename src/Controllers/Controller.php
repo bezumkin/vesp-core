@@ -15,16 +15,22 @@ abstract class Controller
 {
     /** @var Eloquent $eloquent */
     protected $eloquent;
+
     /** @var Request $request */
     protected $request;
+
     /** @var ResponseInterface $response */
     protected $response;
+
     /** @var RouteInterface $route */
     protected $route;
+
     /** @var User $user */
     protected $user;
+
     // Scope required to run controller
     protected $scope;
+
     // Stat and debug data
     protected $start_time = 0;
     protected $query_time = 0;

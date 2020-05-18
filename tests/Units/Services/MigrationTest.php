@@ -8,7 +8,6 @@ use Vesp\Tests\TestCase;
 
 class MigrationTest extends TestCase
 {
-
     public function testInit()
     {
         $migration = new Migration('test', '1.0');

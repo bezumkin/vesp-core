@@ -7,7 +7,6 @@ use Vesp\Tests\TestCase;
 
 class EloquentTest extends TestCase
 {
-
     public function testConstruct()
     {
         $eloquent = new Eloquent();

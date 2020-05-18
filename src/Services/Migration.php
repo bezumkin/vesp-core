@@ -10,9 +10,9 @@ class Migration extends AbstractMigration
 {
     /** @var Manager $eloquent */
     public $eloquent;
+
     /** @var Builder $schema */
     public $schema;
-
 
     public function init()
     {

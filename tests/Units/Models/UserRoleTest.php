@@ -8,7 +8,6 @@ use Vesp\Tests\TestCase;
 
 class UserRoleTest extends TestCase
 {
-
     public function testUsers()
     {
         $model = new UserRole();

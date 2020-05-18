@@ -30,6 +30,7 @@ class File extends Model
     protected $casts = [
         'metadata' => 'array',
     ];
+
     /** @var Filesystem $filesystem */
     protected $filesystem;
 
@@ -39,9 +40,6 @@ class File extends Model
         $this->filesystem = $this->getFilesystem();
     }
 
-    /**
-     *
-     */
     public function getFilesystem()
     {
         $adapter = new Local(self::getRoot());

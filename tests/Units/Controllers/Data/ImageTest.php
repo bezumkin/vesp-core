@@ -2,7 +2,7 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Vesp\Tests\Units\Controllers;
+namespace Vesp\Tests\Units\Controllers\Data;
 
 use Vesp\Controllers\Data\Image;
 use Vesp\Models\File;

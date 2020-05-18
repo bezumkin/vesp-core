@@ -5,6 +5,7 @@
 namespace Vesp\Tests\Units\Models;
 
 use InvalidArgumentException;
+use League\Flysystem\Filesystem;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 use Vesp\Models\File;
@@ -23,11 +24,7 @@ class FileTest extends TestCase
         parent::tearDownAfterClass();
 
         $root = (new File())->getFilesystem()->getAdapter()->getPathPrefix();
-        if (DIRECTORY_SEPARATOR === '/') {
-            system('rm -r ' . $root);
-        } else {
-            system('rmdir ' . $root . ' /s /q');
-        }
+        (new \Symfony\Component\Filesystem\Filesystem())->remove($root);
     }
 
     public function testUploadBase64Failure()

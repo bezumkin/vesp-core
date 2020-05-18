@@ -1,6 +1,6 @@
 <?php
 
-namespace Vesp\Tests\Units\Controllers;
+namespace Vesp\Tests\Units\Controllers\Security;
 
 use Vesp\Controllers\Security\Login;
 use Vesp\Models\User;
