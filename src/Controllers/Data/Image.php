@@ -37,7 +37,7 @@ class Image extends ModelGetController
 
         $response = new PsrResponseFactory(
             $this->response,
-            function ($stream) {
+            static function ($stream) {
                 return new Stream($stream);
             }
         );

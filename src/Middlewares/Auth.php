@@ -31,8 +31,9 @@ class Auth
     public function __invoke(Request $request, RequestHandler $handler)
     {
         if ($token = $this->getToken($request)) {
-            /** @var User $user */
-            if ($user = (new $this->model())->query()->where('active', true)->find($token->id)) {
+            /** @var User|null $user */
+            $user = (new $this->model())->query()->where('active', true)->find($token->id);
+            if ($user) {
                 $request = $request->withAttribute('user', $user);
             }
         }

@@ -20,9 +20,8 @@ class Jwt
             'iat' => $time,
             'exp' => $time + getenv('JWT_EXPIRE'),
         ];
-        $data += $add;
 
-        return FirebaseJWT::encode($data, getenv('JWT_SECRET'), 'HS256');
+        return FirebaseJWT::encode(array_merge($data, $add), getenv('JWT_SECRET'), 'HS256');
     }
 
     /**

@@ -17,6 +17,6 @@ class Migration extends AbstractMigration
     public function init()
     {
         $this->eloquent = new Eloquent();
-        $this->schema = $this->eloquent->schema();
+        $this->schema = $this->eloquent->getConnection()->getSchemaBuilder();
     }
 }

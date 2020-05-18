@@ -44,7 +44,7 @@ abstract class Controller
         if (getenv('CONTROLLERS_STAT') || getenv('CONTROLLERS_DEBUG')) {
             $this->start_time = microtime(true);
             $eloquent->getDatabaseManager()->listen(
-                function ($query) use (&$count) {
+                function ($query) {
                     /** @var QueryExecuted $query */
                     if (getenv('CONTROLLERS_STAT')) {
                         $this->query_time += $query->time;
@@ -73,10 +73,9 @@ abstract class Controller
         $this->route = $routeContext->getRoute();
         $this->request = $request;
         $this->response = $response;
-        if ($user = $request->getAttribute('user')) {
-            if ($user instanceof User) {
-                $this->user = $user;
-            }
+        $user = $request->getAttribute('user');
+        if ($user instanceof User) {
+            $this->user = $user;
         }
 
         $method = strtolower($request->getMethod());
@@ -109,7 +108,7 @@ abstract class Controller
      */
     public function checkScope($method)
     {
-        if ($method === 'options' || !$this->scope || (PHP_SAPI == 'cli' && !getenv('PHPUNIT'))) {
+        if ($method === 'options' || !$this->scope || (PHP_SAPI === 'cli' && !getenv('PHPUNIT'))) {
             return true;
         }
 
@@ -210,9 +209,7 @@ abstract class Controller
      */
     public function getProperty(string $key, $default = null)
     {
-        return isset($this->properties[$key])
-            ? $this->properties[$key]
-            : $default;
+        return $this->properties[$key] ?? $default;
     }
 
     /**

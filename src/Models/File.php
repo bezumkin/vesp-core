@@ -44,7 +44,7 @@ class File extends Model
      */
     public function getFilesystem()
     {
-        $adapter = new Local($this->getRoot());
+        $adapter = new Local(self::getRoot());
 
         return new Filesystem($adapter);
     }
@@ -83,8 +83,8 @@ class File extends Model
         $type = $file->getClientMediaType();
         $title = $file->getClientFilename();
 
-        $filename = $this->getSaveName($title, $type);
-        $path = $this->getSavePath($filename);
+        $filename = self::getSaveName($title, $type);
+        $path = self::getSavePath($filename);
 
         $contents = $file->getStream()->getContents();
         $stream = $file->getStream()->detach();
@@ -120,10 +120,8 @@ class File extends Model
         if ($filename && $tmp = pathinfo($filename, PATHINFO_EXTENSION)) {
             $ext = strtolower($tmp);
         }
-        if (!$ext && $mime && $tmp = explode('/', strtolower($mime))) {
-            if (count($tmp) === 2) {
-                $ext = $tmp[1];
-            }
+        if (!$ext && $mime && ($tmp = explode('/', strtolower($mime))) && count($tmp) === 2) {
+            $ext = $tmp[1];
         }
 
         $name = uniqid('', true);
@@ -165,7 +163,7 @@ class File extends Model
      */
     public function getFullPath()
     {
-        return implode('/', [$this->getRoot(), $this->path, $this->file]);
+        return implode('/', [self::getRoot(), $this->path, $this->file]);
     }
 
     /**

@@ -26,7 +26,7 @@ abstract class ModelController extends Controller
             $c = $this->beforeGet($c);
             if (is_array($key)) {
                 $c->where(
-                    function (Builder $c) use ($key) {
+                    static function (Builder $c) use ($key) {
                         foreach ($key as $item => $value) {
                             $c->where($item, $value);
                         }
@@ -61,7 +61,7 @@ abstract class ModelController extends Controller
 
         $data = $this->prepareList(
             [
-                'total' => isset($total) ? $total : count($rows),
+                'total' => $total ?? count($rows),
                 'rows' => $rows,
             ]
         );

@@ -62,10 +62,10 @@ class User extends Model
 
         foreach ($scopes as $scope) {
             if (strpos($scope, '/') !== false) {
-                if (!in_array($scope, $user_scopes) && !in_array(preg_replace('#/.*#', '', $scope), $user_scopes)) {
+                if (!in_array($scope, $user_scopes, true) && !in_array(preg_replace('#/.*#', '', $scope), $user_scopes, true)) {
                     return false;
                 }
-            } elseif (!in_array($scope, $user_scopes)) {
+            } elseif (!in_array($scope, $user_scopes, true)) {
                 return false;
             }
         }

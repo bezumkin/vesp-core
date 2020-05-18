@@ -19,13 +19,12 @@ class Login extends Controller
         $username = trim($this->getProperty('username'));
         $password = trim($this->getProperty('password'));
 
-        /** @var User $user */
-        if ($user = (new $this->model())->newQuery()->where('username', $username)->first()) {
-            if ($user->verifyPassword($password)) {
-                return !$user->active
-                    ? $this->failure('This user is not active', 403)
-                    : $this->success(['token' => Jwt::makeToken($user->id)]);
-            }
+        /** @var User|null $user */
+        $user = (new $this->model())->newQuery()->where('username', $username)->first();
+        if ($user && $user->verifyPassword($password)) {
+            return !$user->active
+                ? $this->failure('This user is not active', 403)
+                : $this->success(['token' => Jwt::makeToken($user->id)]);
         }
 
         return $this->failure('Wrong username or password', 422);
