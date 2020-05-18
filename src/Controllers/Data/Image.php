@@ -30,7 +30,7 @@ class Image extends ModelGetController
         $server = ServerFactory::create(
             [
                 'base_url' => $this->request->getUri()->getPath(),
-                'source' => $file->getFilesystem(),
+                'source' => $file->getFilesystem()->getBaseFilesystem(),
                 'cache' => getenv('CACHE_DIR') ?: (sys_get_temp_dir() . '/image_cache'),
             ]
         );

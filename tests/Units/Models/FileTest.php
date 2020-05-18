@@ -23,7 +23,7 @@ class FileTest extends TestCase
     {
         parent::tearDownAfterClass();
 
-        $root = (new File())->getFilesystem()->getAdapter()->getPathPrefix();
+        $root = (new \Vesp\Helpers\Filesystem())->getBaseFilesystem()->getAdapter()->getPathPrefix();
         (new \Symfony\Component\Filesystem\Filesystem())->remove($root);
     }
 
@@ -58,11 +58,10 @@ class FileTest extends TestCase
     {
         /** @var File $file */
         $file = File::query()->find(1);
-        $path = $file->getFullPath();
-        $this->assertTrue(file_exists($path));
+        $this->assertFileExists($file->full_file_path);
 
         $file->delete();
-        $this->assertFalse(file_exists($path));
+        $this->assertFileNotExists($file->full_file_path);
         $this->assertFalse($file->exists);
     }
 
@@ -71,8 +70,7 @@ class FileTest extends TestCase
         $file = new File();
         $file->uploadFile(self::PNG, ['name' => 'test.png']);
 
-        $path = $file->getFullPath();
-        unlink($path);
+        $file->deleteFile();
         $this->assertFalse($file->getFile());
 
         $file->delete();
@@ -89,7 +87,7 @@ class FileTest extends TestCase
         $file->uploadFile($data);
 
         $this->assertTrue($file->exists);
-        $this->assertTrue(file_exists($file->getFullPath()));
+        $this->assertFileExists($file->full_file_path);
         $this->assertIsString($file->getFile());
         $file->delete();
     }
