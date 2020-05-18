@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Vesp\Traits;
 
@@ -8,7 +10,7 @@ trait ModelDtoTrait
 {
     public function toDto(string $dtoClass, array $data)
     {
-        $dto = new $dtoClass;
+        $dto = new $dtoClass();
         if (empty($data)) {
             return $dto;
         }

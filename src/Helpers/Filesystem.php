@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Vesp\Helpers;
 
@@ -22,7 +24,7 @@ class Filesystem
         $this->filesystem = new BaseFilesystem($adapter);
     }
 
-    public function getBaseFilesystem() : BaseFilesystem
+    public function getBaseFilesystem(): BaseFilesystem
     {
         return $this->filesystem;
     }
@@ -116,7 +118,7 @@ class Filesystem
      * @throws InvalidArgumentException
      * @throws FileExistsException
      */
-    public function uploadFile($file, FileDto $fileDto, array $metadata = null, $replace = true) : FileDto
+    public function uploadFile($file, FileDto $fileDto, array $metadata = null, $replace = true): FileDto
     {
         if (is_string($file)) {
             if (!strpos($file, ';base64,')) {

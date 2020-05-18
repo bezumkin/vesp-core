@@ -67,12 +67,12 @@ class File extends Model
         return $this->filesystem->getFile($this->file_path);
     }
 
-    public function getFullFilePathAttribute() : string
+    public function getFullFilePathAttribute(): string
     {
         return $this->filesystem->getFullPath($this->file_path);
     }
 
-    public function getFilePathAttribute() : string
+    public function getFilePathAttribute(): string
     {
         return $this->path . '/' . $this->file;
     }
@@ -93,7 +93,7 @@ class File extends Model
         return parent::delete();
     }
 
-    public function getFilesystem() : Filesystem
+    public function getFilesystem(): Filesystem
     {
         return $this->filesystem;
     }
