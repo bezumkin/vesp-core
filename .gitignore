@@ -4,6 +4,6 @@ composer.lock
 clover.xml
 coverage.xml
 report
-upload
+tmp
 /coveralls-upload.json
 /tests/.phpunit.result.cache

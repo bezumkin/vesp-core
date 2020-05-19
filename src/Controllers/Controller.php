@@ -2,7 +2,7 @@
 
 namespace Vesp\Controllers;
 
-use Illuminate\Database\Events\QueryExecuted;
+use Clockwork\Clockwork;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
@@ -28,14 +28,11 @@ abstract class Controller
     /** @var User $user */
     protected $user;
 
+    /** @var Clockwork $clockwork */
+    protected $clockwork;
+
     // Scope required to run controller
     protected $scope;
-
-    // Stat and debug data
-    protected $start_time = 0;
-    protected $query_time = 0;
-    protected $queries = 0;
-    protected $debug = [];
 
     private $properties = [];
 
@@ -46,25 +43,6 @@ abstract class Controller
     public function __construct(Eloquent $eloquent)
     {
         $this->eloquent = $eloquent;
-
-        if (getenv('CONTROLLERS_STAT') || getenv('CONTROLLERS_DEBUG')) {
-            $this->start_time = microtime(true);
-            $eloquent->getDatabaseManager()->listen(
-                function ($query) {
-                    /** @var QueryExecuted $query */
-                    if (getenv('CONTROLLERS_STAT')) {
-                        $this->query_time += $query->time;
-                        $this->queries++;
-                    }
-                    if (getenv('CONTROLLERS_DEBUG')) {
-                        foreach ($query->bindings as $v) {
-                            $query->sql = preg_replace('#\?#', is_numeric($v) ? $v : "'{$v}'", $query->sql, 1);
-                        }
-                        $this->debug[] = $query->sql;
-                    }
-                }
-            );
-        }
     }
 
     /**
@@ -79,9 +57,14 @@ abstract class Controller
         $this->route = $routeContext->getRoute();
         $this->request = $request;
         $this->response = $response;
+
         $user = $request->getAttribute('user');
         if ($user instanceof User) {
             $this->user = $user;
+        }
+        $clockwork = $request->getAttribute('clockwork');
+        if ($clockwork instanceof Clockwork) {
+            $this->clockwork = $clockwork;
         }
 
         $method = strtolower($request->getMethod());
@@ -150,20 +133,6 @@ abstract class Controller
      */
     protected function response($data, $status = 200, $reason = '')
     {
-        if (is_array($data)) {
-            if (getenv('CONTROLLERS_DEBUG')) {
-                $data['debug'] = $this->debug;
-            }
-            if (getenv('CONTROLLERS_STAT')) {
-                $data['stat'] = [
-                    'memory' => memory_get_peak_usage(true),
-                    'queries' => $this->queries,
-                    'query_time' => round(($this->query_time / 1000), 7),
-                    'total_time' => round((microtime(true) - $this->start_time), 7),
-                ];
-            }
-        }
-
         $response = $this->response;
         if ($data !== null) {
             $response
