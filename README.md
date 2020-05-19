@@ -28,7 +28,7 @@ $app->any('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
     ->add(Vesp\Middlewares\Clockwork::class);
 ```
 
-А для просмотра данных из браузерного расширения нужно добавить спецаильный маршрут
+А для просмотра данных из браузерного расширения нужно добавить специальный маршрут
 ```php
 $app->get('/__clockwork/{id:(?:[0-9-]+|latest)}', [Vesp\Controllers\Data\Clockwork::class, 'process']);
 ```
