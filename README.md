@@ -11,7 +11,7 @@
 Содержит заготовки контроллеров, базовые модели, примеры миграции и **JWT** авторизацию.
 
 
-## Подключение Clockwork
+### Подключение Clockwork
 
 ![](https://file.modx.pro/files/5/5/4/554c5b8f8a68a900334989f540a21f51.png)
 
@@ -24,7 +24,7 @@ composer require itsgoingd/clockwork
 
 После этого можно собирать данные о работе маршрутов через добавление к ним middleware:
 ```php
-$app->group('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
+$app->any('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
     ->add(Vesp\Middlewares\Clockwork::class);
 ```
 
