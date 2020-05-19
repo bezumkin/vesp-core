@@ -120,6 +120,48 @@ class Filesystem
      */
     public function uploadFile($file, FileDto $fileDto, array $metadata = null, $replace = true): FileDto
     {
+        $file = $this->normalizeFile($file);
+        $type = $file->getClientMediaType();
+        $title = $file->getClientFilename();
+
+        $filename = $this->getSaveName($title, $type);
+        $path = $this->getSavePath($filename);
+
+        $contents = $file->getStream()->getContents();
+        $stream = $file->getStream()->detach();
+
+        if ($replace && $fileDto->file) {
+            $this->deleteFile($fileDto->path . '/' . $fileDto->file);
+        }
+
+        $this->filesystem->writeStream($path . '/' . $filename, $stream);
+        $fileDto = $this->getImageSize($contents, $type, $fileDto);
+        fclose($stream);
+
+        $fileDto->title = $title;
+        $fileDto->path = $path;
+        $fileDto->file = $filename;
+        $fileDto->type = $type;
+        $fileDto->metadata = $metadata;
+
+        return $fileDto;
+    }
+
+    private function getImageSize(string $contents, string $type, FileDto $fileDto): FileDto
+    {
+        if (strpos($type, 'image/') !== 0) {
+            return $fileDto;
+        }
+
+        $size = getimagesizefromstring($contents);
+        $fileDto->width = (int)$size[0];
+        $fileDto->height = (int)$size[1];
+
+        return $fileDto;
+    }
+
+    private function normalizeFile($file): UploadedFile
+    {
         if (is_string($file)) {
             if (!strpos($file, ';base64,')) {
                 throw new InvalidArgumentException('Could not parse base64 string');
@@ -133,31 +175,6 @@ class Filesystem
             $file = new UploadedFile($stream, !empty($metadata['name']) ? $metadata['name'] : '', $mime, strlen($data));
         }
 
-        $type = $file->getClientMediaType();
-        $title = $file->getClientFilename();
-
-        $filename = $this->getSaveName($title, $type);
-        $path = $this->getSavePath($filename);
-
-        $contents = $file->getStream()->getContents();
-        $stream = $file->getStream()->detach();
-
-        if ($replace && $fileDto->file) {
-            $this->deleteFile($fileDto->path . '/' . $fileDto->file);
-        }
-        $this->filesystem->writeStream($path . '/' . $filename, $stream);
-        if (strpos($type, 'image/') === 0 && $size = getimagesizefromstring($contents)) {
-            $fileDto->width = (int)$size[0];
-            $fileDto->height = (int)$size[1];
-        }
-        fclose($stream);
-
-        $fileDto->title = $title;
-        $fileDto->path = $path;
-        $fileDto->file = $filename;
-        $fileDto->type = $type;
-        $fileDto->metadata = $metadata;
-
-        return $fileDto;
+        return $file;
     }
 }
