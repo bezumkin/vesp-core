@@ -2,6 +2,7 @@
 
 namespace Vesp\Controllers\Data;
 
+use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Storage\FileStorage;
 use Psr\Http\Message\ResponseInterface;
 use Vesp\Controllers\Controller;
@@ -43,6 +44,9 @@ class Clockwork extends Controller
             $data = $storage->latest();
         } elseif ($id) {
             $data = $storage->find($id);
+            if ($data && strpos($this->request->getUri()->getPath(), 'extended') !== false) {
+                $data = (new XdebugDataSource())->extend($data);
+            }
         }
 
         return !empty($data)
