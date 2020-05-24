@@ -16,7 +16,7 @@
 ![](https://file.modx.pro/files/5/5/4/554c5b8f8a68a900334989f540a21f51.png)
 
 На время разработки вы можете подключить [библиотеку Clockwork][clockwork], которая будет собирать ваши запросы 
-через middlewrae и выводить при помощи браузерного расширения для [Firefox][cw-firefox] и [Chrome][cw-chrome].
+через middleware и выводить при помощи браузерного расширения для [Firefox][cw-firefox] и [Chrome][cw-chrome].
 
 ```sh
 composer require itsgoingd/clockwork

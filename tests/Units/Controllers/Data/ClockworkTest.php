@@ -53,6 +53,17 @@ class ClockworkTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
+    public function testExtendedGetSuccess()
+    {
+        $reports = $this->storage->all();
+        $first = array_shift($reports);
+
+        $request = $this->createRequest('GET', self::URI . '/' . $first->id . '/extended');
+        $response = $this->app->handle($request);
+
+        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -61,5 +72,6 @@ class ClockworkTest extends TestCase
         $pattern = $this::URI . '/{id:(?:[0-9-]+|latest)}[/{direction:(?:next|previous)}[/{count:\d+}]]';
         $this->app->get($pattern, [Clockwork::class, 'process'])
             ->add(\Vesp\Middlewares\Clockwork::class);
+        $this->app->get($this::URI . '/{id:[0-9-]+}/extended', [Clockwork::class, 'process']);
     }
 }
