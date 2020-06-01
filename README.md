@@ -30,10 +30,18 @@ $app->any('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
 
 А для просмотра данных из браузерного расширения нужно добавить специальный маршрут
 ```php
-$app->get('/__clockwork/{id:(?:[0-9-]+|latest)}[/extended]', [Vesp\Controllers\Data\Clockwork::class, 'process']);
+$app->get(
+    '/__clockwork/{id:(?:[0-9-]+|latest)}[/{direction:(?:next|previous)}[/{count:\d+}]]', 
+    [Vesp\Controllers\Data\Clockwork::class, 'process']
+);
 ```
 
-Обратите внимание, что данные могут содержать чувствительную информацию, поэтому лучше защитить этот маршрут 
+Если у вас включен Xdebug, и вы профилируете запросы, то нужен еще один маршрут:
+```php
+$app->get('/__clockwork/{id:[0-9-]+}/extended', [Vesp\Controllers\Data\Clockwork::class, 'process']);
+```
+
+Обратите внимание, что данные могут содержать чувствительную информацию, поэтому лучше защитить эти маршруты 
 авторизацией через Web-сервер или другим способом.
 
 
