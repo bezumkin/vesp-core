@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers\User;
 
 use Psr\Http\Message\ResponseInterface;
@@ -7,10 +9,7 @@ use Vesp\Controllers\Controller;
 
 class Profile extends Controller
 {
-    /**
-     * @return ResponseInterface
-     */
-    public function get()
+    public function get(): ResponseInterface
     {
         if ($this->user) {
             $data = $this->user->toArray();
@@ -22,10 +21,7 @@ class Profile extends Controller
         return $this->failure('Authentication required', 401);
     }
 
-    /**
-     * @return ResponseInterface
-     */
-    public function patch()
+    public function patch(): ResponseInterface
     {
         if ($password = trim($this->getProperty('password'))) {
             $this->user->password = $password;

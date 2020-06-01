@@ -78,7 +78,7 @@ class FileTest extends TestCase
 
     public function testUploadFile()
     {
-        $stream = new Stream(fopen(self::PNG, 'r'));
+        $stream = new Stream(fopen(self::PNG, 'rb'));
         $data = new UploadedFile($stream, 'test.png', 'image/png', strlen(self::PNG));
         putenv('UPLOAD_DIR='); // Clear upload path to use PHP temporary dir
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Models;
 
 use Carbon\Carbon;
@@ -26,7 +28,6 @@ class User extends Model
     /**
      * @param string $key
      * @param mixed $value
-     *
      * @return mixed|void
      */
     public function setAttribute($key, $value)
@@ -37,37 +38,28 @@ class User extends Model
         parent::setAttribute($key, $value);
     }
 
-    /**
-     * @param $password
-     *
-     * @return bool
-     */
-    public function verifyPassword($password)
+    public function verifyPassword(string $password): bool
     {
         return password_verify($password, $this->getAttribute('password'));
     }
 
     /**
      * @param array|string $scopes
-     *
      * @return bool
      */
-    public function hasScope($scopes)
+    public function hasScope($scopes): bool
     {
         if (!is_array($scopes)) {
             $scopes = [$scopes];
         }
-        $userScopes = $this->role->scope;
+        $user = $this->role->scope;
 
         foreach ($scopes as $scope) {
             if (strpos($scope, '/') !== false) {
-                if (
-                    !in_array($scope, $userScopes, true) &&
-                    !in_array(preg_replace('#/.*#', '', $scope), $userScopes, true)
-                ) {
+                if (!in_array($scope, $user, true) && !in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
                     return false;
                 }
-            } elseif (!in_array($scope, $userScopes, true)) {
+            } elseif (!in_array($scope, $user, true)) {
                 return false;
             }
         }
@@ -75,10 +67,7 @@ class User extends Model
         return true;
     }
 
-    /**
-     * @return BelongsTo
-     */
-    public function role()
+    public function role(): BelongsTo
     {
         return $this->belongsTo(UserRole::class);
     }

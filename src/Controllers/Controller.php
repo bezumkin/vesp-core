@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers;
 
 use Clockwork\Clockwork;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Interfaces\RouteInterface;
-use Slim\Psr7\Request;
 use Slim\Routing\RouteContext;
 use Throwable;
 use Vesp\Models\User;
@@ -16,7 +19,7 @@ abstract class Controller
     /** @var Eloquent $eloquent */
     protected $eloquent;
 
-    /** @var Request $request */
+    /** @var RequestInterface $request */
     protected $request;
 
     /** @var ResponseInterface $response */
@@ -36,22 +39,17 @@ abstract class Controller
 
     private $properties = [];
 
-    /**
-     * Controller constructor.
-     * @param Eloquent $eloquent
-     */
     public function __construct(Eloquent $eloquent)
     {
         $this->eloquent = $eloquent;
     }
 
     /**
-     * @param Request $request
+     * @param RequestInterface|ServerRequestInterface $request
      * @param ResponseInterface $response
      * @return ResponseInterface
-     * @expectedException
      */
-    public function process(Request $request, ResponseInterface $response)
+    public function process(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $routeContext = RouteContext::fromRequest($request);
         $this->route = $routeContext->getRoute();
@@ -73,9 +71,8 @@ abstract class Controller
             $this->setProperties($properties);
         }
 
-        $check = $this->checkScope($method);
-        if ($check instanceof ResponseInterface) {
-            return $check;
+        if ($noScope = $this->checkScope($method)) {
+            return $noScope;
         }
 
         if (!method_exists($this, $method)) {
@@ -92,34 +89,32 @@ abstract class Controller
     }
 
     /**
-     * @param string $method
-     * @return bool|ResponseInterface
+     * @param $method
+     * @return ResponseInterface|null
      */
-    public function checkScope($method)
+    public function checkScope($method): ?ResponseInterface
     {
         if ($method === 'options' || !$this->scope || (PHP_SAPI === 'cli' && !getenv('PHPUNIT'))) {
-            return true;
+            return null;
         }
 
         if ($this->scope && !$this->user) {
             return $this->failure('Authentication required', 401);
         }
-
         $scope = $this->scope . '/' . $method;
 
-        return $this->user->hasScope($scope)
-            ? true
-            : $this->failure('You have no "' . $scope . '" scope for this action', 403);
+        return !$this->user->hasScope($scope)
+            ? $this->failure('You have no "' . $scope . '" scope for this action', 403)
+            : null;
     }
 
     /**
      * @param string $message
      * @param int $code
      * @param string $reason
-     *
      * @return ResponseInterface
      */
-    public function failure($message = '', $code = 422, $reason = '')
+    public function failure($message = '', int $code = 422, string $reason = ''): ResponseInterface
     {
         return $this->response($message, $code, $reason);
     }
@@ -128,10 +123,9 @@ abstract class Controller
      * @param mixed $data
      * @param int $status
      * @param string $reason
-     *
      * @return ResponseInterface
      */
-    protected function response($data, $status = 200, $reason = '')
+    protected function response($data, int $status = 200, string $reason = ''): ResponseInterface
     {
         $response = $this->response;
         if ($data !== null) {
@@ -152,7 +146,7 @@ abstract class Controller
     /**
      * @return ResponseInterface
      */
-    public function options()
+    public function options(): ResponseInterface
     {
         $response = $this->success();
         if (getenv('CORS')) {
@@ -168,10 +162,9 @@ abstract class Controller
      * @param array $data
      * @param int $code
      * @param string $reason
-     *
      * @return ResponseInterface
      */
-    public function success($data = [], $code = 200, $reason = '')
+    public function success($data = [], int $code = 200, string $reason = ''): ResponseInterface
     {
         return $this->response($data, $code, $reason);
     }
@@ -191,31 +184,22 @@ abstract class Controller
      * @param string $key
      * @param mixed $value
      */
-    public function setProperty(string $key, $value)
+    public function setProperty(string $key, $value): void
     {
         $this->properties[$key] = $value;
     }
 
-    /**
-     * @param string $key
-     */
-    public function unsetProperty(string $key)
+    public function unsetProperty(string $key): void
     {
         unset($this->properties[$key]);
     }
 
-    /**
-     * @return array
-     */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
-    /**
-     * @param array $properties
-     */
-    public function setProperties(array $properties)
+    public function setProperties(array $properties): void
     {
         $this->properties = $properties;
     }

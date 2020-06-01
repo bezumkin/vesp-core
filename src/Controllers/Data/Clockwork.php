@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers\Data;
 
 use Clockwork\DataSource\XdebugDataSource;
@@ -14,19 +16,12 @@ class Clockwork extends Controller
     /** @var Service $clockwork */
     protected $clockwork;
 
-    /**
-     * @param Eloquent $eloquent
-     * @param Service $clockwork
-     */
     public function __construct(Eloquent $eloquent, Service $clockwork)
     {
         parent::__construct($eloquent);
         $this->clockwork = $clockwork;
     }
 
-    /**
-     * @return ResponseInterface
-     */
     public function get(): ResponseInterface
     {
         /** @var FileStorage $storage */

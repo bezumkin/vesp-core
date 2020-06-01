@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Middlewares;
 
 use Clockwork\DataSource\EloquentDataSource;
@@ -7,7 +9,7 @@ use Clockwork\DataSource\PsrMessageDataSource;
 use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Helpers\ServerTiming;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Vesp\Services\Clockwork as Service;
 use Vesp\Services\Eloquent;
@@ -23,11 +25,6 @@ class Clockwork
     /** @var float $startTime */
     protected $startTime;
 
-    /**
-     * Autoload database connection into middleware
-     * @param Eloquent $eloquent
-     * @param Service $clockwork
-     */
     public function __construct(Eloquent $eloquent, Service $clockwork)
     {
         $this->eloquent = $eloquent;
@@ -35,12 +32,7 @@ class Clockwork
         $this->startTime = microtime(true);
     }
 
-    /**
-     * @param Request $request
-     * @param RequestHandler $handler
-     * @return ResponseInterface
-     */
-    public function __invoke(Request $request, RequestHandler $handler)
+    public function __invoke(ServerRequestInterface $request, RequestHandler $handler): ResponseInterface
     {
         $source = new EloquentDataSource($this->eloquent->getDatabaseManager(), $this->eloquent->getEventDispatcher());
         $source->listenToEvents();

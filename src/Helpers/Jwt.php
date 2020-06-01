@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Helpers;
 
 use Firebase\JWT\JWT as FirebaseJWT;
@@ -12,7 +14,7 @@ class Jwt
      * @param array $add
      * @return string
      */
-    public static function makeToken($id, $add = [])
+    public static function makeToken($id, $add = []): string
     {
         $time = time();
         $data = [

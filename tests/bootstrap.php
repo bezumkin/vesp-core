@@ -11,5 +11,5 @@ putenv('CONTROLLERS_DEBUG=1');
 putenv('JWT_SECRET=' . uniqid('', true));
 putenv('JWT_EXPIRE=1800');
 putenv('PHPUNIT=1');
-putenv('CACHE_DIR=' . dirname(__DIR__) . '/tmp');
-putenv('UPLOAD_DIR=' . dirname(__DIR__) . '/tmp/upload');
+putenv('TMP_DIR=' . rtrim(dirname(__DIR__), '/') . '/tmp');
+putenv('UPLOAD_DIR=' . rtrim(dirname(__DIR__), '/') . '/tmp/upload');

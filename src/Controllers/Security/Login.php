@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers\Security;
 
 use Psr\Http\Message\ResponseInterface;
@@ -11,10 +13,7 @@ class Login extends Controller
 {
     protected $model = User::class;
 
-    /**
-     * @return ResponseInterface
-     */
-    public function post()
+    public function post(): ResponseInterface
     {
         $username = trim($this->getProperty('username'));
         $password = trim($this->getProperty('password'));

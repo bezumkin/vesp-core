@@ -1,31 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 
 abstract class ModelGetController extends ModelController
 {
-    /**
-     * @return ResponseInterface
-     */
-    public function put()
+    public function put(): ResponseInterface
     {
         return $this->failure(null, 405);
     }
 
-    /**
-     * @return ResponseInterface
-     */
-    public function patch()
+    public function patch(): ResponseInterface
     {
         return $this->failure(null, 405);
     }
 
-    /**
-     * @return ResponseInterface
-     */
-    public function delete()
+    public function delete(): ResponseInterface
     {
         return $this->failure(null, 405);
     }

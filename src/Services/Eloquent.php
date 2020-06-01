@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Services;
 
 use Illuminate\Database\Capsule\Manager;
@@ -7,9 +9,6 @@ use Illuminate\Events\Dispatcher;
 
 class Eloquent extends Manager
 {
-    /**
-     * Eloquent constructor.
-     */
     public function __construct()
     {
         parent::__construct();

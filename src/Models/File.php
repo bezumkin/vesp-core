@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Vesp\Helpers\Filesystem;
 use Vesp\Dto\File as FileDto;
-use Throwable;
+use Vesp\Helpers\Filesystem;
 use Vesp\Traits\ModelDtoTrait;
 
 /**
@@ -42,7 +43,7 @@ class File extends Model
         $this->filesystem = new Filesystem();
     }
 
-    public function uploadFile($file, array $metadata = null, $replace = true)
+    public function uploadFile($file, array $metadata = null, $replace = true): string
     {
         $dto = $this->filesystem->uploadFile(
             $file,
@@ -59,17 +60,17 @@ class File extends Model
 
         $this->save();
 
-        return $this->full_file_path;
+        return $this->getFullFilePathAttribute();
     }
 
-    public function getFile()
+    public function getFile(): ?string
     {
         return $this->filesystem->getFile($this->file_path);
     }
 
     public function getFullFilePathAttribute(): string
     {
-        return $this->filesystem->getFullPath($this->file_path);
+        return $this->filesystem->getFullPath($this->getFilePathAttribute());
     }
 
     public function getFilePathAttribute(): string
@@ -77,16 +78,12 @@ class File extends Model
         return $this->path . '/' . $this->file;
     }
 
-    public function deleteFile()
+    public function deleteFile(): void
     {
-        $this->filesystem->deleteFile($this->file_path);
+        $this->filesystem->deleteFile($this->getFilePathAttribute());
     }
 
-    /**
-     * @return bool|null
-     * @throws Throwable
-     */
-    public function delete()
+    public function delete(): ?bool
     {
         $this->deleteFile();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Services;
 
 use Illuminate\Database\Capsule\Manager;
@@ -14,7 +16,7 @@ class Migration extends AbstractMigration
     /** @var Builder $schema */
     public $schema;
 
-    public function init()
+    public function init(): void
     {
         $this->eloquent = new Eloquent();
         $this->schema = $this->eloquent->getConnection()->getSchemaBuilder();

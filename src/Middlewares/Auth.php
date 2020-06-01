@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Vesp\Helpers\Jwt;
 use Vesp\Models\User;
@@ -14,21 +16,12 @@ class Auth
     protected $eloquent;
     protected $model = User::class;
 
-    /**
-     * Autoload database connection into middleware
-     * @param Eloquent $eloquent
-     */
     public function __construct(Eloquent $eloquent)
     {
         $this->eloquent = $eloquent;
     }
 
-    /**
-     * @param Request $request
-     * @param RequestHandler $handler
-     * @return ResponseInterface
-     */
-    public function __invoke(Request $request, RequestHandler $handler)
+    public function __invoke(ServerRequestInterface $request, RequestHandler $handler): ResponseInterface
     {
         if ($token = $this->getToken($request)) {
             /** @var User|null $user */
@@ -41,11 +34,7 @@ class Auth
         return $handler->handle($request);
     }
 
-    /**
-     * @param Request $request
-     * @return false|object
-     */
-    protected function getToken($request)
+    protected function getToken(ServerRequestInterface $request): ?object
     {
         $pcre = '#Bearer\s+(.*)$#i';
         $token = null;
@@ -68,6 +57,6 @@ class Auth
             return $decoded;
         }
 
-        return false;
+        return null;
     }
 }

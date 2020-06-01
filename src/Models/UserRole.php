@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -19,10 +21,7 @@ class UserRole extends Model
         'scope' => 'array',
     ];
 
-    /**
-     * @return HasMany
-     */
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class, 'role_id');
     }

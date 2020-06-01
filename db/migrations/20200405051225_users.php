@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Schema\Blueprint;
 use Vesp\Services\Migration;
 
 class Users extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->schema->create(
             'user_roles',
-            function (Blueprint $table) {
+            static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('title')->unique();
                 $table->json('scope');
@@ -19,7 +21,7 @@ class Users extends Migration
 
         $this->schema->create(
             'users',
-            function (Blueprint $table) {
+            static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('username')->unique();
                 $table->string('password');
@@ -35,7 +37,7 @@ class Users extends Migration
         );
     }
 
-    public function down()
+    public function down(): void
     {
         $this->schema->drop('users');
         $this->schema->drop('user_roles');

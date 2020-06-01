@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers\Data;
 
 use League\Glide\Responses\PsrResponseFactory;
@@ -13,10 +15,7 @@ class Image extends ModelGetController
 {
     protected $model = File::class;
 
-    /**
-     * @return ResponseInterface
-     */
-    public function get()
+    public function get(): ResponseInterface
     {
         $id = $this->getPrimaryKey();
         /** @var File $file */
@@ -31,7 +30,7 @@ class Image extends ModelGetController
             [
                 'base_url' => $this->request->getUri()->getPath(),
                 'source' => $file->getFilesystem()->getBaseFilesystem(),
-                'cache' => rtrim(getenv('CACHE_DIR') ?: sys_get_temp_dir(), '/') . '/image_cache/',
+                'cache' => rtrim(getenv('TMP_DIR') ?: sys_get_temp_dir(), '/') . '/image_cache/',
             ]
         );
 

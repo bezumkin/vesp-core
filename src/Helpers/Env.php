@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Helpers;
 
 use Symfony\Component\Dotenv\Dotenv;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vesp\Controllers;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -13,10 +15,7 @@ abstract class ModelController extends Controller
     protected $model;
     protected $primaryKey = 'id';
 
-    /**
-     * @return ResponseInterface
-     */
-    public function get()
+    public function get(): ResponseInterface
     {
         /** @var Model $class */
         $c = (new $this->model())->newQuery();
@@ -68,51 +67,27 @@ abstract class ModelController extends Controller
         return $this->success($data);
     }
 
-    /**
-     * Add conditions before get an object by id
-     *
-     * @param Builder $c
-     * @return Builder
-     */
-    protected function beforeGet(Builder $c)
+    protected function beforeGet(Builder $c): Builder
     {
         return $c;
     }
 
-    /**
-     * @param Model $object
-     * @return array
-     */
-    public function prepareRow(Model $object)
+    public function prepareRow(Model $object): array
     {
         return $object->toArray();
     }
 
-    /**
-     * @param array $array
-     * @return array
-     */
-    public function prepareList(array $array)
+    public function prepareList(array $array): array
     {
         return $array;
     }
 
-    /**
-     * Add joins and search filter
-     *
-     * @param Builder $c
-     * @return Builder
-     */
-    protected function beforeCount(Builder $c)
+    protected function beforeCount(Builder $c): Builder
     {
         return $c;
     }
 
-    /**
-     * @param Builder $c
-     * @return int
-     */
-    protected function getCount(Builder $c)
+    protected function getCount(Builder $c): int
     {
         return $c->count();
     }
@@ -123,15 +98,12 @@ abstract class ModelController extends Controller
      * @param Builder $c
      * @return Builder
      */
-    protected function afterCount(Builder $c)
+    protected function afterCount(Builder $c): Builder
     {
         return $c;
     }
 
-    /**
-     * @return ResponseInterface
-     */
-    public function put()
+    public function put(): ResponseInterface
     {
         try {
             /** @var Model $record */
@@ -151,7 +123,7 @@ abstract class ModelController extends Controller
     }
 
     /**
-     * @param $record
+     * @param Model $record
      * @return bool|string
      */
     protected function beforeSave(Model $record)
@@ -161,19 +133,12 @@ abstract class ModelController extends Controller
             : 'Could not save the object';
     }
 
-    /**
-     * @param Model $record
-     * @return Model
-     */
-    protected function afterSave(Model $record)
+    protected function afterSave(Model $record): Model
     {
         return $record;
     }
 
-    /**
-     * @return ResponseInterface
-     */
-    public function patch()
+    public function patch(): ResponseInterface
     {
         if (!$id = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
@@ -237,7 +202,7 @@ abstract class ModelController extends Controller
         if (is_array($this->primaryKey)) {
             $key = [];
             foreach ($this->primaryKey as $item) {
-                if (!is_string($item) || !$value = $this->route->getArgument($item, $this->getProperty($item))) {
+                if (!$value = $this->route->getArgument($item, (string)$this->getProperty($item))) {
                     return null;
                 }
                 $key[$item] = $value;
@@ -246,6 +211,6 @@ abstract class ModelController extends Controller
             return $key;
         }
 
-        return $this->route->getArgument($this->primaryKey, $this->getProperty($this->primaryKey));
+        return $this->route->getArgument($this->primaryKey, (string)$this->getProperty($this->primaryKey));
     }
 }
