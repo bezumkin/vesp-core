@@ -9,7 +9,7 @@ use Throwable;
 
 abstract class ModelController extends Controller
 {
-    /** @var Model $model */
+    /** @var string $model */
     protected $model;
     protected $primaryKey = 'id';
 
@@ -19,8 +19,7 @@ abstract class ModelController extends Controller
     public function get()
     {
         /** @var Model $class */
-        $class = new $this->model();
-        $c = $class->newQuery();
+        $c = (new $this->model())->newQuery();
 
         if ($key = $this->getPrimaryKey()) {
             $c = $this->beforeGet($c);
@@ -179,7 +178,7 @@ abstract class ModelController extends Controller
         if (!$id = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
         }
-        if (!$record = $this->model::query()->find($id)) {
+        if (!$record = (new $this->model())->newQuery()->find($id)) {
             return $this->failure('Could not find a record', 404);
         }
         try {
@@ -207,7 +206,7 @@ abstract class ModelController extends Controller
             return $this->failure('You must specify the primary key of object', 422);
         }
         /** @var Model $record */
-        if (!$record = $this->model::query()->find($id)) {
+        if (!$record = (new $this->model())->newQuery()->find($id)) {
             return $this->failure('Could not find a record', 404);
         }
         $check = $this->beforeDelete($record);

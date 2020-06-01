@@ -32,7 +32,7 @@ class Auth
     {
         if ($token = $this->getToken($request)) {
             /** @var User|null $user */
-            $user = (new $this->model())->query()->where('active', true)->find($token->id);
+            $user = (new $this->model())->newQuery()->where('active', true)->find($token->id);
             if ($user) {
                 $request = $request->withAttribute('user', $user);
             }

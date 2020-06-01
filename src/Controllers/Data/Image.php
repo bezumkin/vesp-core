@@ -20,7 +20,7 @@ class Image extends ModelGetController
     {
         $id = $this->getPrimaryKey();
         /** @var File $file */
-        if (!$id || !$file = File::query()->find($id)) {
+        if (!$id || !$file = (new $this->model())->newQuery()->find($id)) {
             return $this->response->withStatus(404);
         }
         if (strpos($file->type, 'image/') !== 0) {
