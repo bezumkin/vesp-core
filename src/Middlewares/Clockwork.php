@@ -51,7 +51,9 @@ class Clockwork
 
         $this->clockwork->getTimeline()->finalize($this->startTime);
         $this->clockwork->addDataSource(new PsrMessageDataSource($request, $response));
-        $this->clockwork->addDataSource(new XdebugDataSource());
+        if (function_exists('xdebug_get_profiler_filename')) {
+            $this->clockwork->addDataSource(new XdebugDataSource());
+        }
 
         $this->clockwork->resolveRequest();
         $this->clockwork->storeRequest();
