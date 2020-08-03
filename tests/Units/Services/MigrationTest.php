@@ -1,17 +1,17 @@
 <?php
 
-namespace Vesp\Tests\Units\Services;
+namespace Vesp\CoreTests\Units\Services;
 
 use Illuminate\Database\Schema\Builder;
 use Vesp\Services\Migration;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class MigrationTest extends TestCase
 {
-    public function testInit()
+    public function testInit(): void
     {
         $migration = new Migration('test', '1.0');
         $migration->init();
-        $this->assertInstanceOf(Builder::class, $migration->schema);
+        self::assertInstanceOf(Builder::class, $migration->schema);
     }
 }

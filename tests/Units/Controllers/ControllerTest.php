@@ -1,28 +1,28 @@
 <?php
 
-namespace Vesp\Tests\Units\Controllers;
+namespace Vesp\CoreTests\Units\Controllers;
 
 use Vesp\Helpers\Jwt;
 use Vesp\Middlewares\Auth;
 use Vesp\Models\User;
 use Vesp\Models\UserRole;
 use Vesp\Services\Eloquent;
-use Vesp\Tests\Mock\ScopedModelController;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\Mock\ScopedModelController;
+use Vesp\CoreTests\TestCase;
 
 class ControllerTest extends TestCase
 {
     protected const URI = '/api/users';
 
-    public function testNoScopeFailure()
+    public function testNoScopeFailure(): void
     {
         $request = $this->createRequest('GET', self::URI, ['id' => 1]);
         $response = $this->app->handle($request);
 
-        $this->assertEquals(401, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(401, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testWrongScopeFailure()
+    public function testWrongScopeFailure(): void
     {
         (new User(['username' => 'username', 'password' => 'password', 'role_id' => 2]))->save();
 
@@ -30,53 +30,53 @@ class ControllerTest extends TestCase
             ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken(1));
         $response = $this->app->handle($request);
 
-        $this->assertEquals(403, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(403, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testWrongMethodFailure()
+    public function testWrongMethodFailure(): void
     {
         (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
         $request = $this->createRequest('POST', self::URI)
             ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken(1));
         $response = $this->app->handle($request);
 
-        $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(404, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testFatalFailure()
+    public function testFatalFailure(): void
     {
         (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
         $request = $this->createRequest('PATCH', self::URI, ['id' => 1, 'test_exception' => true])
             ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken(1));
         $response = $this->app->handle($request);
 
-        $this->assertEquals(500, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(500, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testOptions()
+    public function testOptions(): void
     {
         $request = $this->createRequest('OPTIONS', self::URI);
         $response = $this->app->handle($request);
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
-        $this->assertIsString($response->getHeaderLine('Access-Control-Allow-Methods'), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertIsString($response->getHeaderLine('Access-Control-Allow-Methods'), $response->getBody());
     }
 
-    public function testProperties()
+    public function testProperties(): void
     {
         $controller = new ScopedModelController(new Eloquent());
 
         $controller->setProperty('test', 'value');
-        $this->assertEquals('value', $controller->getProperty('test'));
+        self::assertEquals('value', $controller->getProperty('test'));
 
         $controller->unsetProperty('test');
-        $this->assertNull($controller->getProperty('test'));
+        self::assertNull($controller->getProperty('test'));
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->app->any(self::URI, [ScopedModelController::class, 'process'])
+        $this->app->any(self::URI, ScopedModelController::class)
             ->add(Auth::class);
 
         (new UserRole(['title' => 'admin', 'scope' => ['users']]))->save();

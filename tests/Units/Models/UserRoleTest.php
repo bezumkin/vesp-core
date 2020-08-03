@@ -1,16 +1,16 @@
 <?php
 
-namespace Vesp\Tests\Units\Models;
+namespace Vesp\CoreTests\Units\Models;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Vesp\Models\UserRole;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class UserRoleTest extends TestCase
 {
-    public function testUsers()
+    public function testUsers(): void
     {
         $model = new UserRole();
-        $this->assertInstanceOf(Relation::class, $model->users());
+        self::assertInstanceOf(Relation::class, $model->users());
     }
 }

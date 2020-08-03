@@ -10,7 +10,7 @@ use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Helpers\ServerTiming;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Psr\Http\Server\RequestHandlerInterface;
 use Vesp\Services\Clockwork as Service;
 use Vesp\Services\Eloquent;
 
@@ -32,7 +32,7 @@ class Clockwork
         $this->startTime = microtime(true);
     }
 
-    public function __invoke(ServerRequestInterface $request, RequestHandler $handler): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $source = new EloquentDataSource($this->eloquent->getDatabaseManager(), $this->eloquent->getEventDispatcher());
         $source->listenToEvents();

@@ -24,7 +24,7 @@ composer require itsgoingd/clockwork
 
 После этого можно собирать данные о работе маршрутов через добавление к ним middleware:
 ```php
-$app->any('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
+$app->any('/api/some-action', App\Controllers\SomeAction::class)
     ->add(Vesp\Middlewares\Clockwork::class);
 ```
 
@@ -32,13 +32,13 @@ $app->any('/api/some-action', [App\Controllers\SomeAction::class, 'process'])
 ```php
 $app->get(
     '/__clockwork/{id:(?:[0-9-]+|latest)}[/{direction:(?:next|previous)}[/{count:\d+}]]', 
-    [Vesp\Controllers\Data\Clockwork::class, 'process']
+    Vesp\Controllers\Data\Clockwork::class
 );
 ```
 
 Если у вас включен Xdebug, и вы профилируете запросы, то нужен еще один маршрут:
 ```php
-$app->get('/__clockwork/{id:[0-9-]+}/extended', [Vesp\Controllers\Data\Clockwork::class, 'process']);
+$app->get('/__clockwork/{id:[0-9-]+}/extended', Vesp\Controllers\Data\Clockwork::class);
 ```
 
 Обратите внимание, что данные могут содержать чувствительную информацию, поэтому лучше защитить эти маршруты 

@@ -2,13 +2,14 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Vesp\Tests\Units\Models;
+namespace Vesp\CoreTests\Units\Models;
 
 use InvalidArgumentException;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
+use Vesp\CoreTests\TestCase;
 use Vesp\Models\File;
-use Vesp\Tests\TestCase;
+use Vesp\Services\Filesystem;
 
 class FileTest extends TestCase
 {
@@ -22,11 +23,11 @@ class FileTest extends TestCase
     {
         parent::tearDownAfterClass();
 
-        $root = (new \Vesp\Helpers\Filesystem())->getBaseFilesystem()->getAdapter()->getPathPrefix();
+        $root = (new Filesystem())->getBaseFilesystem()->getAdapter()->getPathPrefix();
         (new \Symfony\Component\Filesystem\Filesystem())->remove($root);
     }
 
-    public function testUploadBase64Failure()
+    public function testUploadBase64Failure(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
@@ -35,48 +36,49 @@ class FileTest extends TestCase
         $file->uploadFile('wrong_base64_string', ['name' => 'Test']);
     }
 
-    public function testUploadBase64Success()
+    public function testUploadBase64Success(): void
     {
         $file = new File();
-        $path = $file->uploadFile(self::JPG, ['name' => 'test_with_no_extenstion']);
-        $this->assertIsString($path);
-        $this->assertEquals(1, $file->id);
+        $path = $file->uploadFile(self::JPG, ['name' => 'test_with_no_extension']);
+        self::assertIsString($path);
+        self::assertEquals(1, $file->id);
     }
 
-    public function testUploadBase64Replace()
+    public function testUploadBase64Replace(): void
     {
+        /** @var File $file */
         $file = File::query()->find(1);
         $old_file = $file->getFile();
         $new_file = $file->uploadFile(self::PNG, ['name' => 'test.png']);
 
-        $this->assertIsString($new_file);
-        $this->assertNotEquals($old_file, $new_file);
+        self::assertIsString($new_file);
+        self::assertNotEquals($old_file, $new_file);
     }
 
-    public function testDeleteSuccess()
+    public function testDeleteSuccess(): void
     {
         /** @var File $file */
         $file = File::query()->find(1);
-        $this->assertFileExists($file->full_file_path);
+        self::assertFileExists($file->full_file_path);
 
         $file->delete();
-        $this->assertFileNotExists($file->full_file_path);
-        $this->assertFalse($file->exists);
+        self::assertFileNotExists($file->full_file_path);
+        self::assertFalse($file->exists);
     }
 
-    public function testDeleteNoFileSuccess()
+    public function testDeleteNoFileSuccess(): void
     {
         $file = new File();
         $file->uploadFile(self::PNG, ['name' => 'test.png']);
 
         $file->deleteFile();
-        $this->assertNull($file->getFile());
+        self::assertNull($file->getFile());
 
         $file->delete();
-        $this->assertFalse($file->exists);
+        self::assertFalse($file->exists);
     }
 
-    public function testUploadFile()
+    public function testUploadFile(): void
     {
         $stream = new Stream(fopen(self::PNG, 'rb'));
         $data = new UploadedFile($stream, 'test.png', 'image/png', strlen(self::PNG));
@@ -85,9 +87,9 @@ class FileTest extends TestCase
         $file = new File();
         $file->uploadFile($data);
 
-        $this->assertTrue($file->exists);
-        $this->assertFileExists($file->full_file_path);
-        $this->assertIsString($file->getFile());
+        self::assertTrue($file->exists);
+        self::assertFileExists($file->full_file_path);
+        self::assertIsString($file->getFile());
         $file->delete();
     }
 }

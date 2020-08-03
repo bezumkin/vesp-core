@@ -16,7 +16,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Vesp\\Tests\\": "tests/"
+            "Vesp\\CoreTests\\": "tests/"
         }
     },
     "require": {

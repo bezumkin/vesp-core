@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Vesp\Helpers;
+namespace Vesp\Services;
 
 use InvalidArgumentException;
+use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem as BaseFilesystem;
@@ -12,7 +13,6 @@ use RuntimeException;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 use Throwable;
-use Vesp\Dto\File as FileDto;
 
 class Filesystem
 {
@@ -20,9 +20,7 @@ class Filesystem
 
     public function __construct()
     {
-        $adapter = new Local($this->getRoot());
-
-        $this->filesystem = new BaseFilesystem($adapter);
+        $this->filesystem = new BaseFilesystem($this->getAdapter());
     }
 
     public function getBaseFilesystem(): BaseFilesystem
@@ -54,47 +52,49 @@ class Filesystem
     }
 
     /**
-     * @param UploadedFile|string $file
-     * @param FileDto $fileDto
-     * @param array $metadata
-     * @param bool $replace
-     * @return FileDto
+     * @param UploadedFile|string $data
+     * @param ?array $metadata
+     * @return ?array
      * @throws InvalidArgumentException
      * @throws FileExistsException
      * @throws RuntimeException
+     * @noinspection NullPointerExceptionInspection
      */
-    public function uploadFile($file, FileDto $fileDto, array $metadata = null, bool $replace = true): FileDto
+    public function uploadFile($data, ?array $metadata = []): array
     {
-        $file = $this->normalizeFile($file, $metadata);
-        $type = $file->getClientMediaType();
-        $title = $file->getClientFilename();
+        $data = $this->normalizeFile($data, $metadata);
+        $stream = $data->getStream();
+        $stream->rewind();
+        $contents = $stream->getContents();
+        $stream = $stream->detach();
+
+        $type = $data->getClientMediaType();
+        $title = $data->getClientFilename();
         $filename = $this->getSaveName($title, $type);
         $path = $this->getSavePath($filename);
-
-        /** @noinspection NullPointerExceptionInspection */
-        $contents = $file->getStream()->getContents();
-        /** @noinspection NullPointerExceptionInspection */
-        $stream = $file->getStream()->detach();
-
-        if ($replace && $fileDto->file) {
-            $this->deleteFile($fileDto->path . '/' . $fileDto->file);
-        }
 
         $this->filesystem->writeStream($path . '/' . $filename, $stream);
         fclose($stream);
 
-        $fileDto->title = $title;
-        $fileDto->path = $path;
-        $fileDto->file = $filename;
-        $fileDto->type = $type;
-        $fileDto->metadata = $metadata;
-        if (strpos($type, 'image/') === 0) {
-            $size = getimagesizefromstring($contents);
-            $fileDto->width = (int)$size[0];
-            $fileDto->height = (int)$size[1];
+        $result = [
+            'title' => $title,
+            'path' => $path,
+            'file' => $filename,
+            'type' => $type,
+            'size' => strlen($contents),
+            'metadata' => $metadata,
+        ];
+        if (strpos($type, 'image/') === 0 && $size = getimagesizefromstring($contents)) {
+            $result['width'] = (int)$size[0];
+            $result['height'] = (int)$size[1];
         }
 
-        return $fileDto;
+        return $result;
+    }
+
+    protected function getAdapter(): AbstractAdapter
+    {
+        return new Local($this->getRoot());
     }
 
     protected function getRoot(): string
@@ -130,7 +130,7 @@ class Filesystem
             : '';
     }
 
-    private function normalizeFile($file, ?array $metadata = []): UploadedFile
+    protected function normalizeFile($file, ?array $metadata = []): UploadedFile
     {
         if (is_string($file)) {
             if (!strpos($file, ';base64,')) {

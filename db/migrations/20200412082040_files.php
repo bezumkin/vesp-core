@@ -19,6 +19,7 @@ class Files extends Migration
                 $table->string('type')->nullable();
                 $table->smallInteger('width')->unsigned()->nullable();
                 $table->smallInteger('height')->unsigned()->nullable();
+                $table->integer('size')->unsigned()->nullable();
                 $table->json('metadata')->nullable();
                 $table->timestamps();
             }

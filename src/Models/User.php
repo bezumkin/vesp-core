@@ -35,7 +35,8 @@ class User extends Model
         if ($key === 'password') {
             $value = password_hash($value, PASSWORD_DEFAULT);
         }
-        parent::setAttribute($key, $value);
+
+        return parent::setAttribute($key, $value);
     }
 
     public function verifyPassword(string $password): bool

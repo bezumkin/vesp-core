@@ -32,7 +32,7 @@ class Users extends Migration
                 $table->foreign('role_id')
                     ->references('id')->on('user_roles')
                     ->onUpdate('restrict')
-                    ->onDelete('set null');
+                    ->onDelete('cascade');
             }
         );
     }

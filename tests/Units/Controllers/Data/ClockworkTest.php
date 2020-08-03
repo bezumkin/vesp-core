@@ -1,12 +1,10 @@
 <?php
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
-namespace Vesp\Tests\Units\Controllers\Data;
+namespace Vesp\CoreTests\Units\Controllers\Data;
 
 use Clockwork\Storage\FileStorage;
 use Vesp\Controllers\Data\Clockwork;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class ClockworkTest extends TestCase
 {
@@ -14,35 +12,33 @@ class ClockworkTest extends TestCase
     /** @var FileStorage */
     protected $storage;
 
-    // @codingStandardsIgnoreEnd
-
-    public function testNotFoundGetFailure()
+    public function testNotFoundGetFailure(): void
     {
         $request = $this->createRequest('GET', self::URI . '/12345-12345');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(404, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testIdGetSuccess()
+    public function testIdGetSuccess(): void
     {
         $request = $this->createRequest('GET', self::URI . '/latest');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testPreviousGetSuccess()
+    public function testPreviousGetSuccess(): void
     {
         $reports = $this->storage->all();
         $last = array_pop($reports);
         $request = $this->createRequest('GET', self::URI . '/' . $last->id . '/previous/1');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testNextGetSuccess()
+    public function testNextGetSuccess(): void
     {
         $reports = $this->storage->all();
         $first = array_shift($reports);
@@ -50,10 +46,10 @@ class ClockworkTest extends TestCase
         $request = $this->createRequest('GET', self::URI . '/' . $first->id . '/next');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testExtendedGetSuccess()
+    public function testExtendedGetSuccess(): void
     {
         $reports = $this->storage->all();
         $first = array_shift($reports);
@@ -61,7 +57,7 @@ class ClockworkTest extends TestCase
         $request = $this->createRequest('GET', self::URI . '/' . $first->id . '/extended');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
     protected function setUp(): void
@@ -70,8 +66,8 @@ class ClockworkTest extends TestCase
         $this->storage = (new \Vesp\Services\Clockwork())->getStorage();
 
         $pattern = $this::URI . '/{id:(?:[0-9-]+|latest)}[/{direction:(?:next|previous)}[/{count:\d+}]]';
-        $this->app->get($pattern, [Clockwork::class, 'process'])
+        $this->app->get($pattern, Clockwork::class)
             ->add(\Vesp\Middlewares\Clockwork::class);
-        $this->app->get($this::URI . '/{id:[0-9-]+}/extended', [Clockwork::class, 'process']);
+        $this->app->get($this::URI . '/{id:[0-9-]+}/extended', Clockwork::class);
     }
 }

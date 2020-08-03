@@ -34,7 +34,6 @@ abstract class Controller
     /** @var Clockwork $clockwork */
     protected $clockwork;
 
-    // Scope required to run controller
     protected $scope;
 
     private $properties = [];
@@ -49,7 +48,7 @@ abstract class Controller
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function process(RequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $routeContext = RouteContext::fromRequest($request);
         $this->route = $routeContext->getRoute();
@@ -88,11 +87,7 @@ abstract class Controller
         // @codeCoverageIgnoreEnd
     }
 
-    /**
-     * @param $method
-     * @return ResponseInterface|null
-     */
-    public function checkScope($method): ?ResponseInterface
+    public function checkScope(string $method): ?ResponseInterface
     {
         if ($method === 'options' || !$this->scope || (PHP_SAPI === 'cli' && !getenv('PHPUNIT'))) {
             return null;
@@ -109,7 +104,7 @@ abstract class Controller
     }
 
     /**
-     * @param string $message
+     * @param mixed $message
      * @param int $code
      * @param string $reason
      * @return ResponseInterface
@@ -143,9 +138,6 @@ abstract class Controller
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
     }
 
-    /**
-     * @return ResponseInterface
-     */
     public function options(): ResponseInterface
     {
         $response = $this->success();
@@ -159,7 +151,7 @@ abstract class Controller
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @param int $code
      * @param string $reason
      * @return ResponseInterface

@@ -9,17 +9,13 @@ use Throwable;
 
 class Env
 {
-    /**
-     * @param string $file
-     * @return string
-     */
-    public static function loadFile(string $file)
+    public static function loadFile(string $file): ?string
     {
         try {
             $dotenv = new Dotenv(true);
             $dotenv->loadEnv($file);
 
-            return true;
+            return null;
         } catch (Throwable $e) {
             return $e->getMessage();
         }

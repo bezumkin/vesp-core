@@ -2,11 +2,11 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Vesp\Tests\Units\Controllers\Data;
+namespace Vesp\CoreTests\Units\Controllers\Data;
 
 use Vesp\Controllers\Data\Image;
 use Vesp\Models\File;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class ImageTest extends TestCase
 {
@@ -17,15 +17,15 @@ class ImageTest extends TestCase
 
     // @codingStandardsIgnoreEnd
 
-    public function testNotFoundGetFailure()
+    public function testNotFoundGetFailure(): void
     {
         $request = $this->createRequest('GET', self::URI, ['id' => 1]);
         $response = $this->app->handle($request);
 
-        $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(404, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testWrongTypeFailure()
+    public function testWrongTypeFailure(): void
     {
         $file = new File();
         $file->uploadFile(self::TXT, ['name' => 'test.txt']);
@@ -33,10 +33,10 @@ class ImageTest extends TestCase
         $request = $this->createRequest('GET', self::URI, ['id' => $file->id]);
         $response = $this->app->handle($request);
 
-        $this->assertEquals(422, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(422, $response->getStatusCode(), $response->getBody());
     }
 
-    public function testGetSuccess()
+    public function testGetSuccess(): void
     {
         $file = new File();
         $file->uploadFile(self::PNG, ['name' => 'test.png']);
@@ -45,12 +45,12 @@ class ImageTest extends TestCase
         $response = $this->app->handle($request);
         $file->delete();
 
-        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->app->get(self::URI, [Image::class, 'process']);
+        $this->app->get(self::URI, Image::class);
     }
 }

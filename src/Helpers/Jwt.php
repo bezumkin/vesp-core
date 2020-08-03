@@ -9,12 +9,7 @@ use Throwable;
 
 class Jwt
 {
-    /**
-     * @param $id
-     * @param array $add
-     * @return string
-     */
-    public static function makeToken($id, $add = []): string
+    public static function makeToken(int $id, array $add = []): string
     {
         $time = time();
         $data = [
@@ -26,16 +21,12 @@ class Jwt
         return FirebaseJWT::encode(array_merge($data, $add), getenv('JWT_SECRET'), 'HS256');
     }
 
-    /**
-     * @param $token
-     * @return false|object
-     */
-    public static function decodeToken($token)
+    public static function decodeToken(string $token): ?object
     {
         try {
             return FirebaseJWT::decode($token, getenv('JWT_SECRET'), ['HS256']);
         } catch (Throwable $e) {
-            return false;
+            return null;
         }
     }
 }

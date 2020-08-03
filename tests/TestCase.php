@@ -1,11 +1,10 @@
 <?php
 
-namespace Vesp\Tests;
+namespace Vesp\CoreTests;
 
 use DI\Bridge\Slim\Bridge;
 use Phinx\Config\Config;
 use Phinx\Migration\Manager;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Slim\Psr7\Factory\ServerRequestFactory;
@@ -51,7 +50,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param array $params
      * @return ServerRequestInterface
      */
-    public function createRequest($method, $uri, $params = []): RequestInterface
+    public function createRequest(string $method, string $uri, array $params = []): ServerRequestInterface
     {
         $method = strtoupper($method);
         $request = (new ServerRequestFactory())->createServerRequest($method, $uri);

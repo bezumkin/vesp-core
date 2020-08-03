@@ -1,17 +1,17 @@
 <?php
 
-namespace Vesp\Tests\Units\Controllers\Security;
+namespace Vesp\CoreTests\Units\Controllers\Security;
 
 use Vesp\Controllers\Security\Login;
 use Vesp\Models\User;
 use Vesp\Models\UserRole;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class LoginTest extends TestCase
 {
     protected const URI = '/api/security/login';
 
-    public function testPostSuccess()
+    public function testPostSuccess(): void
     {
         $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
         $model->save();
@@ -21,11 +21,11 @@ class LoginTest extends TestCase
         $response = $this->app->handle($request);
         $body = $response->getBody();
 
-        $this->assertEquals(200, $response->getStatusCode(), $body);
-        $this->assertIsString(json_decode($body)->token, $body);
+        self::assertEquals(200, $response->getStatusCode(), $body);
+        self::assertIsString(json_decode($body, false)->token, $body);
     }
 
-    public function testPostFailure()
+    public function testPostFailure(): void
     {
         $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
         $model->save();
@@ -35,10 +35,10 @@ class LoginTest extends TestCase
         $response = $this->app->handle($request);
         $body = $response->getBody();
 
-        $this->assertEquals(422, $response->getStatusCode(), $body);
+        self::assertEquals(422, $response->getStatusCode(), $body);
     }
 
-    public function testPostNotActive()
+    public function testPostNotActive(): void
     {
         $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1, 'active' => false]);
         $model->save();
@@ -48,13 +48,13 @@ class LoginTest extends TestCase
         $response = $this->app->handle($request);
         $body = $response->getBody();
 
-        $this->assertEquals(403, $response->getStatusCode(), $body);
+        self::assertEquals(403, $response->getStatusCode(), $body);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->app->any(self::URI, [Login::class, 'process']);
+        $this->app->any(self::URI, Login::class);
 
         (new UserRole(['title' => 'title', 'scope' => ['test']]))->save();
     }

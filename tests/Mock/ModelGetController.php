@@ -1,6 +1,6 @@
 <?php
 
-namespace Vesp\Tests\Mock;
+namespace Vesp\CoreTests\Mock;
 
 use Vesp\Models\User;
 

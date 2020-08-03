@@ -14,6 +14,7 @@ abstract class ModelController extends Controller
     /** @var string $model */
     protected $model;
     protected $primaryKey = 'id';
+    protected $maxLimit = 1000;
 
     public function get(): ResponseInterface
     {
@@ -43,10 +44,16 @@ abstract class ModelController extends Controller
             return $this->failure('Could not find a record', 404);
         }
         $c = $this->beforeCount($c);
-        if ($limit = (int)$this->getProperty('limit')) {
+
+        $limit = (int)$this->getProperty('limit');
+        if ($this->maxLimit && (!$limit || $limit > $this->maxLimit)) {
+            $limit = $this->maxLimit;
+        }
+        if ($limit) {
             $total = $this->getCount($c);
             $c->forPage((int)$this->getProperty('page', 1), $limit);
         }
+
         $c = $this->afterCount($c);
         $query = $c->getQuery();
         if (empty($query->{$query->unions ? 'unionOrders' : 'orders'}) && $sort = $this->getProperty('sort')) {
@@ -92,12 +99,6 @@ abstract class ModelController extends Controller
         return $c->count();
     }
 
-    /**
-     * Add selects to query after total count
-     *
-     * @param Builder $c
-     * @return Builder
-     */
     protected function afterCount(Builder $c): Builder
     {
         return $c;
@@ -109,9 +110,8 @@ abstract class ModelController extends Controller
             /** @var Model $record */
             $record = new $this->model();
             $record->fill($this->getProperties());
-            $check = $this->beforeSave($record);
-            if ($check !== true) {
-                return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
+            if ($check = $this->beforeSave($record)) {
+                return $check;
             }
             $record->save();
             $record = $this->afterSave($record);
@@ -122,15 +122,10 @@ abstract class ModelController extends Controller
         }
     }
 
-    /**
-     * @param Model $record
-     * @return bool|string
-     */
-    protected function beforeSave(Model $record)
+    /** @noinspection PhpUnusedParameterInspection */
+    protected function beforeSave(Model $record): ?ResponseInterface
     {
-        return ($record instanceof Model)
-            ? true
-            : 'Could not save the object';
+        return null;
     }
 
     protected function afterSave(Model $record): Model
@@ -148,9 +143,8 @@ abstract class ModelController extends Controller
         }
         try {
             $record->fill($this->getProperties());
-            $check = $this->beforeSave($record);
-            if ($check !== true) {
-                return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
+            if ($check = $this->beforeSave($record)) {
+                return $check;
             }
             $record->save();
             $record = $this->afterSave($record);
@@ -165,7 +159,7 @@ abstract class ModelController extends Controller
      * @return ResponseInterface
      * @throws Throwable
      */
-    public function delete()
+    public function delete(): ResponseInterface
     {
         if (!$id = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
@@ -174,24 +168,18 @@ abstract class ModelController extends Controller
         if (!$record = (new $this->model())->newQuery()->find($id)) {
             return $this->failure('Could not find a record', 404);
         }
-        $check = $this->beforeDelete($record);
-        if ($check !== true) {
-            return $check instanceof ResponseInterface ? $check : $this->failure($check, 422);
+        if ($check = $this->beforeDelete($record)) {
+            return $check;
         }
         $record->delete();
 
         return $this->success();
     }
 
-    /**
-     * @param Model $record
-     * @return bool|string
-     */
-    protected function beforeDelete(Model $record)
+    /** @noinspection PhpUnusedParameterInspection */
+    protected function beforeDelete(Model $record): ?ResponseInterface
     {
-        return ($record instanceof Model)
-            ? true
-            : 'Could not save the object';
+        return null;
     }
 
     /**

@@ -1,17 +1,17 @@
 <?php
 
-namespace Vesp\Tests\Units\Services;
+namespace Vesp\CoreTests\Units\Services;
 
 use Vesp\Services\Eloquent;
-use Vesp\Tests\TestCase;
+use Vesp\CoreTests\TestCase;
 
 class EloquentTest extends TestCase
 {
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $eloquent = new Eloquent();
         $config = $eloquent->getDatabaseManager()->getConfig();
 
-        $this->assertArrayHasKey('driver', $config, print_r($config, true));
+        self::assertArrayHasKey('driver', $config, print_r($config, true));
     }
 }

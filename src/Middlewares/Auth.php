@@ -6,7 +6,7 @@ namespace Vesp\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Psr\Http\Server\RequestHandlerInterface;
 use Vesp\Helpers\Jwt;
 use Vesp\Models\User;
 use Vesp\Services\Eloquent;
@@ -21,7 +21,7 @@ class Auth
         $this->eloquent = $eloquent;
     }
 
-    public function __invoke(ServerRequestInterface $request, RequestHandler $handler): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($token = $this->getToken($request)) {
             /** @var User|null $user */
