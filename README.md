@@ -19,7 +19,7 @@
 через middleware и выводить при помощи браузерного расширения для [Firefox][cw-firefox] и [Chrome][cw-chrome].
 
 ```sh
-composer require itsgoingd/clockwork
+composer require itsgoingd/clockwork:^4.1 --dev
 ```
 
 После этого можно собирать данные о работе маршрутов через добавление к ним middleware:
