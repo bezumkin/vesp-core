@@ -18,23 +18,10 @@ abstract class ModelController extends Controller
 
     public function get(): ResponseInterface
     {
-        /** @var Model $class */
         $c = (new $this->model())->newQuery();
-
         if ($key = $this->getPrimaryKey()) {
             $c = $this->beforeGet($c);
-            if (is_array($key)) {
-                $c->where(
-                    static function (Builder $c) use ($key) {
-                        foreach ($key as $item => $value) {
-                            $c->where($item, $value);
-                        }
-                    }
-                );
-                $record = $c->first();
-            } else {
-                $record = $c->find($key);
-            }
+            $record = is_array($key) ? $c->where($key)->first() : $c->find($key);
             if ($record) {
                 $data = $this->prepareRow($record);
 
@@ -135,10 +122,12 @@ abstract class ModelController extends Controller
 
     public function patch(): ResponseInterface
     {
-        if (!$id = $this->getPrimaryKey()) {
+        if (!$key = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
         }
-        if (!$record = (new $this->model())->newQuery()->find($id)) {
+        $c = (new $this->model())->newQuery();
+        /** @var Model $record */
+        if (!$record = is_array($key) ? $c->where($key)->first() : $c->find($key)) {
             return $this->failure('Could not find a record', 404);
         }
         try {
@@ -161,11 +150,12 @@ abstract class ModelController extends Controller
      */
     public function delete(): ResponseInterface
     {
-        if (!$id = $this->getPrimaryKey()) {
+        if (!$key = $this->getPrimaryKey()) {
             return $this->failure('You must specify the primary key of object', 422);
         }
+        $c = (new $this->model())->newQuery();
         /** @var Model $record */
-        if (!$record = (new $this->model())->newQuery()->find($id)) {
+        if (!$record = is_array($key) ? $c->where($key)->first() : $c->find($key)) {
             return $this->failure('Could not find a record', 404);
         }
         if ($check = $this->beforeDelete($record)) {
