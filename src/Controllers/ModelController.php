@@ -42,10 +42,7 @@ abstract class ModelController extends Controller
         }
 
         $c = $this->afterCount($c);
-        $query = $c->getQuery();
-        if (empty($query->{$query->unions ? 'unionOrders' : 'orders'}) && $sort = $this->getProperty('sort')) {
-            $c->orderBy($sort, $this->getProperty('dir') === 'desc' ? 'desc' : 'asc');
-        }
+        $c = $this->addSorting($c);
         $rows = [];
         foreach ($c->get() as $object) {
             $rows[] = $this->prepareRow($object);
@@ -88,6 +85,19 @@ abstract class ModelController extends Controller
 
     protected function afterCount(Builder $c): Builder
     {
+        return $c;
+    }
+
+    protected function addSorting(Builder $c): Builder
+    {
+        $query = $c->getQuery();
+        if (empty($query->{$query->unions ? 'unionOrders' : 'orders'}) && $sort = $this->getProperty('sort')) {
+            $c->orderBy(
+                preg_replace('#\W+#m', '', $sort),
+                strtolower($this->getProperty('dir')) === 'desc' ? 'desc' : 'asc'
+            );
+        }
+
         return $c;
     }
 
