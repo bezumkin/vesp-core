@@ -94,7 +94,7 @@ abstract class ModelController extends Controller
         if (empty($query->{$query->unions ? 'unionOrders' : 'orders'}) && $sort = $this->getProperty('sort')) {
             $c->orderBy(
                 preg_replace('#\W+#m', '', $sort),
-                strtolower($this->getProperty('dir')) === 'desc' ? 'desc' : 'asc'
+                strtolower($this->getProperty('dir', '')) === 'desc' ? 'desc' : 'asc'
             );
         }
 
