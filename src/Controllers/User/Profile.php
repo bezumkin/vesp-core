@@ -23,7 +23,7 @@ class Profile extends Controller
 
     public function patch(): ResponseInterface
     {
-        if ($password = trim($this->getProperty('password'))) {
+        if ($password = trim($this->getProperty('password', ''))) {
             $this->user->password = $password;
         }
         $this->user->save();

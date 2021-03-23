@@ -32,7 +32,7 @@ class User extends Model
      */
     public function setAttribute($key, $value)
     {
-        if ($key === 'password') {
+        if ($key === 'password' && $value) {
             $value = password_hash($value, PASSWORD_DEFAULT);
         }
 

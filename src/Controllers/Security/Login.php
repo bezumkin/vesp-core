@@ -15,8 +15,8 @@ class Login extends Controller
 
     public function post(): ResponseInterface
     {
-        $username = trim($this->getProperty('username'));
-        $password = trim($this->getProperty('password'));
+        $username = trim($this->getProperty('username', ''));
+        $password = trim($this->getProperty('password', ''));
 
         /** @var User|null $user */
         $user = (new $this->model())->newQuery()->where('username', $username)->first();
