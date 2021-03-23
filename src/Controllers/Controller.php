@@ -65,8 +65,11 @@ abstract class Controller
         }
 
         $method = strtolower($request->getMethod());
-        $properties = ($method === 'get') ? $request->getQueryParams() : $request->getParsedBody();
+        $properties = ($method === 'get') ? $request->getQueryParams() : $request->getParsedBody() ?? [];
         if (is_array($properties)) {
+            if ($method === 'delete') {
+                $properties = array_merge($properties, $request->getQueryParams());
+            }
             $this->setProperties($properties);
         }
 
