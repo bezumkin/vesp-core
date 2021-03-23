@@ -9,6 +9,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Interfaces\RouteInterface;
+use Slim\Psr7\Stream;
 use Slim\Routing\RouteContext;
 use Throwable;
 use Vesp\Models\User;
@@ -127,9 +128,9 @@ abstract class Controller
     {
         $response = $this->response;
         if ($data !== null) {
-            $response
-                ->getBody()
-                ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            $body = new Stream(fopen('php://temp', 'wb'));
+            $body->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            $response = $response->withBody($body);
         }
         if (getenv('CORS')) {
             $response = $response
