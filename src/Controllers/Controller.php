@@ -71,6 +71,7 @@ abstract class Controller
             if ($method === 'delete') {
                 $properties = array_merge($properties, $request->getQueryParams());
             }
+            $properties = array_merge($properties, $this->route->getArguments());
             $this->setProperties($properties);
         }
 
