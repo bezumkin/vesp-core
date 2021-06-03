@@ -40,8 +40,11 @@ class Auth
         $token = null;
 
         $header = $request->getHeaderLine('Authorization');
+        $query = $request->getQueryParams();
         if ($header && preg_match($pcre, $header, $matches)) {
             $token = $matches[1];
+        } elseif (!empty($query['token'])) {
+            $token = $query['token'];
         } else {
             $cookies = $request->getCookieParams();
             if (isset($cookies['auth._token.local'])) {

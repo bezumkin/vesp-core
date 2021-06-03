@@ -27,6 +27,19 @@ class ProfileTest extends TestCase
         self::assertArrayHasKey('user', json_decode($body, true), $body);
     }
 
+    public function testGetWithTokenSuccess(): void
+    {
+        $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
+        $model->save();
+
+        $request = $this->createRequest('GET', self::URI, ['token' => Jwt::makeToken($model->id)]);
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        self::assertEquals(200, $response->getStatusCode(), $body);
+        self::assertArrayHasKey('user', json_decode($body, true), $body);
+    }
+
     public function testGetFailure(): void
     {
         $request = $this->createRequest('GET', self::URI)
