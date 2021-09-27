@@ -16,6 +16,7 @@ use Vesp\Traits\ModelDtoTrait;
  * @property string|null $type
  * @property int|null $width
  * @property int|null $height
+ * @property int|null $size
  * @property array|null $metadata
  * @property Carbon $created_at
  * @property Carbon $updated_at
