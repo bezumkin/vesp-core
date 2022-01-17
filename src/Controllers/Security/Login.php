@@ -26,6 +26,6 @@ class Login extends Controller
                 : $this->success(['token' => Jwt::makeToken($user->id)]);
         }
 
-        return $this->failure('Wrong username or password', 422);
+        return $this->failure('Wrong username or password');
     }
 }

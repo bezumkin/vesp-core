@@ -47,6 +47,7 @@ abstract class Controller
     /**
      * @param RequestInterface|ServerRequestInterface $request
      * @param ResponseInterface $response
+     * @throws Throwable
      * @return ResponseInterface
      */
     public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -98,7 +99,7 @@ abstract class Controller
             return null;
         }
 
-        if ($this->scope && !$this->user) {
+        if (!$this->user) {
             return $this->failure('Authentication required', 401);
         }
         $scope = $this->scope . '/' . $method;
@@ -112,6 +113,7 @@ abstract class Controller
      * @param mixed $message
      * @param int $code
      * @param string $reason
+     * @throws Throwable
      * @return ResponseInterface
      */
     public function failure($message = '', int $code = 422, string $reason = ''): ResponseInterface
@@ -124,13 +126,19 @@ abstract class Controller
      * @param int $status
      * @param string $reason
      * @return ResponseInterface
+     * @throws Throwable
      */
     protected function response($data, int $status = 200, string $reason = ''): ResponseInterface
     {
         $response = $this->response;
         if ($data !== null) {
             $body = new Stream(fopen('php://temp', 'wb'));
-            $body->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            $body->write(
+                json_encode(
+                    $data,
+                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR
+                )
+            );
             $response = $response->withBody($body);
         }
         if (getenv('CORS')) {
@@ -159,6 +167,7 @@ abstract class Controller
      * @param mixed $data
      * @param int $code
      * @param string $reason
+     * @throws Throwable
      * @return ResponseInterface
      */
     public function success($data = [], int $code = 200, string $reason = ''): ResponseInterface

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Vesp\Services;
 
 use InvalidArgumentException;
-use League\Flysystem\Adapter\AbstractAdapter;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem as BaseFilesystem;
-use RuntimeException;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
-use Throwable;
 
 class Filesystem
 {
@@ -31,8 +29,10 @@ class Filesystem
     public function deleteFile(string $path): bool
     {
         try {
-            return $this->filesystem->delete($path);
-        } catch (Throwable $e) {
+            $this->filesystem->delete($path);
+
+            return true;
+        } catch (FilesystemException $e) {
             return false;
         }
     }
@@ -46,7 +46,7 @@ class Filesystem
     {
         try {
             return $this->filesystem->read($path);
-        } catch (Throwable $e) {
+        } catch (FilesystemException $e) {
             return null;
         }
     }
@@ -55,9 +55,7 @@ class Filesystem
      * @param UploadedFile|string $data
      * @param ?array $metadata
      * @return ?array
-     * @throws InvalidArgumentException
-     * @throws FileExistsException
-     * @throws RuntimeException
+     * @throws FilesystemException
      * @noinspection NullPointerExceptionInspection
      */
     public function uploadFile($data, ?array $metadata = []): array
@@ -92,9 +90,9 @@ class Filesystem
         return $result;
     }
 
-    protected function getAdapter(): AbstractAdapter
+    protected function getAdapter(): FilesystemAdapter
     {
-        return new Local($this->getRoot());
+        return new LocalFilesystemAdapter($this->getRoot());
     }
 
     protected function getRoot(): string

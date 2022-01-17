@@ -22,14 +22,10 @@ class Clockwork
     /** @var Service $clockwork */
     protected $clockwork;
 
-    /** @var float $startTime */
-    protected $startTime;
-
     public function __construct(Eloquent $eloquent, Service $clockwork)
     {
         $this->eloquent = $eloquent;
         $this->clockwork = $clockwork;
-        $this->startTime = microtime(true);
     }
 
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -41,7 +37,6 @@ class Clockwork
         $request = $request->withAttribute('clockwork', $this->clockwork);
         $response = $handler->handle($request);
 
-        $this->clockwork->getTimeline()->finalize($this->startTime);
         $this->clockwork->addDataSource(new PsrMessageDataSource($request, $response));
         if (function_exists('xdebug_get_profiler_filename')) {
             $this->clockwork->addDataSource(new XdebugDataSource());
@@ -53,7 +48,7 @@ class Clockwork
         $clockworkRequest = $this->clockwork->getRequest();
         $response = $response
             ->withHeader('X-Clockwork-Id', $clockworkRequest->id)
-            ->withHeader('X-Clockwork-Version', Service::VERSION);
+            ->withHeader('X-Clockwork-Version', \Clockwork\Clockwork::VERSION);
 
         return $response->withHeader('Server-Timing', ServerTiming::fromRequest($clockworkRequest)->value());
     }

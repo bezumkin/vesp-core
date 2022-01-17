@@ -22,25 +22,25 @@
     "require": {
         "php": ">=7.3",
         "ext-json": "*",
-        "firebase/php-jwt": "^5.2",
-        "illuminate/database": "^8.25",
-        "illuminate/events": "^8.25",
-        "league/flysystem": "^1.1",
-        "league/glide": "^1.7",
-        "php-di/slim-bridge": "^3.1",
-        "robmorgan/phinx": "^0.11",
-        "slim/psr7": "^1.3",
-        "slim/slim": "^4.7",
-        "symfony/dotenv": "^5.2"
+        "firebase/php-jwt": "^v5.5.1",
+        "illuminate/database": "^v8.79.0",
+        "illuminate/events": "^v8.79.0",
+        "league/flysystem": "^2.4",
+        "league/glide": "^2.2",
+        "php-di/slim-bridge": "^3.2.0",
+        "robmorgan/phinx": "^0.12.9",
+        "slim/psr7": "^1.3.0",
+        "slim/slim": "^4.9.0",
+        "symfony/dotenv": "^5.4"
     },
     "require-dev": {
-        "itsgoingd/clockwork": "^4.1",
+        "itsgoingd/clockwork": "^5.1",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.5",
         "rregeer/phpunit-coverage-check": "^0.3",
-        "satooshi/php-coveralls": "^2.2",
-        "slevomat/coding-standard": "^6.4",
-        "squizlabs/php_codesniffer": "^3.5"
+        "php-coveralls/php-coveralls": "^2.5",
+        "slevomat/coding-standard": "^7.0",
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "suggest": {
         "itsgoingd/clockwork": "Debug requests with built-in middleware"
@@ -49,9 +49,9 @@
         "phpunit": "vendor/bin/phpunit -c ./tests/phpunit.xml",
         "cs-check": "vendor/bin/phpcs --colors -p",
         "cs-fix": "vendor/bin/phpcbf --colors -p",
-        "test-text": "vendor/bin/phpunit --configuration ./tests/phpunit.xml --coverage-text",
-        "test-html": "vendor/bin/phpunit --configuration ./tests/phpunit.xml --coverage-html=report",
-        "test-clover": "vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-clover=clover.xml",
+        "test-text": "XDEBUG_MODE=coverage vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-text",
+        "test-html": "XDEBUG_MODE=coverage vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-html=report",
+        "test-clover": "XDEBUG_MODE=coverage vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-clover=clover.xml --whitelist=./src/",
         "coveralls": "vendor/bin/php-coveralls --coverage_clover=clover.xml -v -o coveralls-upload.json",
         "test": [
             "@test-text",

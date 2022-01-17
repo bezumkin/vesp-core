@@ -23,8 +23,7 @@ class FileTest extends TestCase
     {
         parent::tearDownAfterClass();
 
-        $root = (new Filesystem())->getBaseFilesystem()->getAdapter()->getPathPrefix();
-        (new \Symfony\Component\Filesystem\Filesystem())->remove($root);
+        (new Filesystem())->getBaseFilesystem()->deleteDirectory('/');
     }
 
     public function testUploadBase64Failure(): void
@@ -62,7 +61,7 @@ class FileTest extends TestCase
         self::assertFileExists($file->full_file_path);
 
         $file->delete();
-        self::assertFileNotExists($file->full_file_path);
+        self::assertFileDoesNotExist($file->full_file_path);
         self::assertFalse($file->exists);
     }
 
@@ -76,6 +75,16 @@ class FileTest extends TestCase
 
         $file->delete();
         self::assertFalse($file->exists);
+    }
+
+    public function testDeleteNoFileError(): void
+    {
+        $filesystem = new Filesystem();
+        $filesystem->getBaseFilesystem()->createDirectory('/directory');
+        $res = $filesystem->deleteFile('/directory');
+        self::assertFalse($res);
+
+        $filesystem->getBaseFilesystem()->deleteDirectory('/directory');
     }
 
     public function testUploadFile(): void

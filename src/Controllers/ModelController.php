@@ -133,7 +133,7 @@ abstract class ModelController extends Controller
     public function patch(): ResponseInterface
     {
         if (!$key = $this->getPrimaryKey()) {
-            return $this->failure('You must specify the primary key of object', 422);
+            return $this->failure('You must specify the primary key of object');
         }
         $c = (new $this->model())->newQuery();
         /** @var Model $record */
@@ -161,7 +161,7 @@ abstract class ModelController extends Controller
     public function delete(): ResponseInterface
     {
         if (!$key = $this->getPrimaryKey()) {
-            return $this->failure('You must specify the primary key of object', 422);
+            return $this->failure('You must specify the primary key of object');
         }
         $c = (new $this->model())->newQuery();
         /** @var Model $record */
@@ -176,7 +176,6 @@ abstract class ModelController extends Controller
         return $this->success();
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
     protected function beforeDelete(Model $record): ?ResponseInterface
     {
         return null;
