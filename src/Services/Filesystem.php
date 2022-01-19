@@ -134,13 +134,18 @@ class Filesystem
             if (!strpos($file, ';base64,')) {
                 throw new InvalidArgumentException('Could not parse base64 string');
             }
-            $stream = new Stream(fopen($file, 'rb'));
-
+            $stream = fopen('php://temp', 'rb+');
             [$mime, $data] = explode(',', $file);
-            $mime = str_replace(['data:', ';base64'], '', $mime);
-            $data = base64_decode($data);
+            fwrite($stream, base64_decode($data));
+            fseek($stream, 0);
+            $stream = new Stream($stream);
 
-            $file = new UploadedFile($stream, !empty($metadata['name']) ? $metadata['name'] : '', $mime, strlen($data));
+            $file = new UploadedFile(
+                $stream,
+                !empty($metadata['name']) ? $metadata['name'] : '',
+                str_replace(['data:', ';base64'], '', $mime),
+                $stream->getSize()
+            );
         }
 
         return $file;
