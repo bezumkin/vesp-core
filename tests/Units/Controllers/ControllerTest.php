@@ -40,7 +40,7 @@ class ControllerTest extends TestCase
             ->withHeader('Authorization', 'Bearer ' . Jwt::makeToken(1));
         $response = $this->app->handle($request);
 
-        self::assertEquals(404, $response->getStatusCode(), $response->getBody());
+        self::assertEquals(405, $response->getStatusCode(), $response->getBody());
     }
 
     public function testFatalFailure(): void

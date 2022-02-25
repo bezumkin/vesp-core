@@ -81,7 +81,7 @@ abstract class Controller
         }
 
         if (!method_exists($this, $method)) {
-            return $this->failure('Could not find requested method', 404);
+            return $this->failure('Method Not Allowed', 405);
         }
         // @codeCoverageIgnoreStart
         // due to weird bug in test coverage for try catch
