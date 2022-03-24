@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vesp\Controllers\Data;
 
+use Carbon\Carbon;
 use League\Glide\Responses\PsrResponseFactory;
 use League\Glide\ServerFactory;
 use Psr\Http\Message\ResponseInterface;
@@ -24,6 +25,21 @@ class Image extends ModelGetController
         }
         if (strpos($file->type, 'image/') !== 0) {
             return $this->response->withStatus(422);
+        }
+
+        // GIFs without image manipulations should have no changes to save animation
+        if ($file->type === 'image/gif') {
+            $properties = $this->getProperties();
+            unset($properties['id']);
+            if (empty($properties)) {
+                $this->response->getBody()->write($file->getFile());
+
+                return $this->response
+                    ->withHeader('Content-Type', $file->type)
+                    ->withHeader('Content-Length', $file->size)
+                    ->withHeader('Cache-Control', 'max-age=31536000, public')
+                    ->withHeader('Expires', Carbon::now()->addYear()->toRfc822String());
+            }
         }
 
         $server = ServerFactory::create(

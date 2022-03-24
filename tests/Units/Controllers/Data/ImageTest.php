@@ -13,6 +13,7 @@ class ImageTest extends TestCase
     protected const URI = '/api/image';
     // @codingStandardsIgnoreStart
     protected const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    protected const GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
     protected const TXT = 'data:text/plain;base64,dGVzdA==';
 
     // @codingStandardsIgnoreEnd
@@ -40,6 +41,18 @@ class ImageTest extends TestCase
     {
         $file = new File();
         $file->uploadFile(self::PNG, ['name' => 'test.png']);
+
+        $request = $this->createRequest('GET', self::URI, ['id' => $file->id]);
+        $response = $this->app->handle($request);
+        $file->delete();
+
+        self::assertEquals(200, $response->getStatusCode(), $response->getBody());
+    }
+
+    public function testGetGifSuccess(): void
+    {
+        $file = new File();
+        $file->uploadFile(self::GIF, ['name' => 'test.gif']);
 
         $request = $this->createRequest('GET', self::URI, ['id' => $file->id]);
         $response = $this->app->handle($request);
