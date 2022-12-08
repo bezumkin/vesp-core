@@ -50,6 +50,16 @@ class ProfileTest extends TestCase
         self::assertEquals(401, $response->getStatusCode(), $body);
     }
 
+    public function testGetAnotherFailure(): void
+    {
+        $request = $this->createRequest('GET', self::URI)
+            ->withCookieParams(['auth._token.local' => 'Wrongtoken']);
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        self::assertEquals(401, $response->getStatusCode(), $body);
+    }
+
     public function testPatchSuccess(): void
     {
         $model = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
