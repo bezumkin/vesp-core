@@ -26,22 +26,12 @@ class Image extends ModelGetController
         if (strpos($file->type, 'image/') !== 0) {
             return $this->response->withStatus(422);
         }
-
-        // GIFs without image manipulations should have no changes to save animation
-        if ($file->type === 'image/gif') {
-            $properties = $this->getProperties();
-            unset($properties['id']);
-            if (empty($properties)) {
-                $this->response->getBody()->write($file->getFile());
-
-                return $this->response
-                    ->withHeader('Content-Type', $file->type)
-                    ->withHeader('Content-Length', $file->size)
-                    ->withHeader('Cache-Control', 'max-age=31536000, public')
-                    ->withHeader('Expires', Carbon::now()->addYear()->toRfc822String());
-            }
+        // Ability of extension for special processing
+        if ($response = $this->handleFile($file)) {
+            return $response;
         }
 
+        // Default processing
         $server = ServerFactory::create(
             [
                 'base_url' => $this->request->getUri()->getPath(),
@@ -60,5 +50,35 @@ class Image extends ModelGetController
         $path = implode('/', [$file->path, $file->file]);
 
         return $server->getImageResponse($path, $this->getProperties());
+    }
+
+    protected function handleFile(File $file): ?ResponseInterface
+    {
+        if ($file->type === 'image/svg+xml') {
+            // SVG cannot be processed, so we output it as is
+            return $this->outputFile($file);
+        }
+
+        // GIFs without image manipulations should have no changes to save animation
+        if ($file->type === 'image/gif') {
+            $properties = $this->getProperties();
+            unset($properties['id']);
+            if (empty($properties)) {
+                return $this->outputFile($file);
+            }
+        }
+
+        return null;
+    }
+
+    protected function outputFile(File $file): ResponseInterface
+    {
+        $this->response->getBody()->write($file->getFile());
+
+        return $this->response
+            ->withHeader('Content-Type', $file->type)
+            ->withHeader('Content-Length', $file->size)
+            ->withHeader('Cache-Control', 'max-age=31536000, public')
+            ->withHeader('Expires', Carbon::now()->addYear()->toRfc822String());
     }
 }
