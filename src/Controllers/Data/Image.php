@@ -23,15 +23,16 @@ class Image extends ModelGetController
         if (!$id || !$file = (new $this->model())->newQuery()->find($id)) {
             return $this->response->withStatus(404);
         }
-        if (strpos($file->type, 'image/') !== 0) {
-            return $this->response->withStatus(422);
-        }
+
         // Ability of extension for special processing
         if ($response = $this->handleFile($file)) {
             return $response;
         }
 
         // Default processing
+        if (strpos($file->type, 'image/') !== 0) {
+            return $this->response->withStatus(422);
+        }
         $server = ServerFactory::create(
             [
                 'base_url' => $this->request->getUri()->getPath(),
