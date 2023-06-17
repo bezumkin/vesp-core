@@ -44,14 +44,9 @@ abstract class Controller
         $this->eloquent = $eloquent;
     }
 
-    /**
-     * @param RequestInterface|ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @throws Throwable
-     * @return ResponseInterface
-     */
     public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
+        /** @var ServerRequestInterface $request */
         $routeContext = RouteContext::fromRequest($request);
         $this->route = $routeContext->getRoute();
         $this->request = $request;
@@ -83,14 +78,12 @@ abstract class Controller
         if (!method_exists($this, $method)) {
             return $this->failure('Method Not Allowed', 405);
         }
-        // @codeCoverageIgnoreStart
-        // due to weird bug in test coverage for try catch
+
         try {
             return $this->{$method}();
         } catch (Throwable $e) {
-            return $this->failure($e->getMessage(), 500);
+            return $this->handleException($e);
         }
-        // @codeCoverageIgnoreEnd
     }
 
     public function checkScope(string $method): ?ResponseInterface
@@ -109,36 +102,17 @@ abstract class Controller
             : null;
     }
 
-    /**
-     * @param mixed $message
-     * @param int $code
-     * @param string $reason
-     * @throws Throwable
-     * @return ResponseInterface
-     */
     public function failure($message = '', int $code = 422, string $reason = ''): ResponseInterface
     {
         return $this->response($message, $code, $reason);
     }
 
-    /**
-     * @param mixed $data
-     * @param int $status
-     * @param string $reason
-     * @return ResponseInterface
-     * @throws Throwable
-     */
     protected function response($data, int $status = 200, string $reason = ''): ResponseInterface
     {
         $response = $this->response;
         if ($data !== null) {
             $body = new Stream(fopen('php://temp', 'wb'));
-            $body->write(
-                json_encode(
-                    $data,
-                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR
-                )
-            );
+            $body->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             $response = $response->withBody($body);
         }
         if (getenv('CORS')) {
@@ -163,13 +137,6 @@ abstract class Controller
         return $response;
     }
 
-    /**
-     * @param mixed $data
-     * @param int $code
-     * @param string $reason
-     * @throws Throwable
-     * @return ResponseInterface
-     */
     public function success($data = [], int $code = 200, string $reason = ''): ResponseInterface
     {
         return $this->response($data, $code, $reason);
@@ -208,5 +175,10 @@ abstract class Controller
     public function setProperties(array $properties): void
     {
         $this->properties = $properties;
+    }
+
+    protected function handleException(Throwable $e): ResponseInterface
+    {
+        return $this->failure($e->getMessage(), 500);
     }
 }

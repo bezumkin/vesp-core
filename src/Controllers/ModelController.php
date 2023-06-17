@@ -7,7 +7,6 @@ namespace Vesp\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 abstract class ModelController extends Controller
 {
@@ -103,23 +102,18 @@ abstract class ModelController extends Controller
 
     public function put(): ResponseInterface
     {
-        try {
-            /** @var Model $record */
-            $record = new $this->model();
-            $record->fill($this->getProperties());
-            if ($check = $this->beforeSave($record)) {
-                return $check;
-            }
-            $record->save();
-            $record = $this->afterSave($record);
-
-            return $this->success($this->prepareRow($record));
-        } catch (Throwable $e) {
-            return $this->failure($e->getMessage(), 500);
+        /** @var Model $record */
+        $record = new $this->model();
+        $record->fill($this->getProperties());
+        if ($check = $this->beforeSave($record)) {
+            return $check;
         }
+        $record->save();
+        $record = $this->afterSave($record);
+
+        return $this->success($this->prepareRow($record));
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
     protected function beforeSave(Model $record): ?ResponseInterface
     {
         return null;
@@ -140,24 +134,17 @@ abstract class ModelController extends Controller
         if (!$record = is_array($key) ? $c->where($key)->first() : $c->find($key)) {
             return $this->failure('Could not find a record', 404);
         }
-        try {
-            $record->fill($this->getProperties());
-            if ($check = $this->beforeSave($record)) {
-                return $check;
-            }
-            $record->save();
-            $record = $this->afterSave($record);
 
-            return $this->success($this->prepareRow($record));
-        } catch (Throwable $e) {
-            return $this->failure($e->getMessage(), 500);
+        $record->fill($this->getProperties());
+        if ($check = $this->beforeSave($record)) {
+            return $check;
         }
+        $record->save();
+        $record = $this->afterSave($record);
+
+        return $this->success($this->prepareRow($record));
     }
 
-    /**
-     * @return ResponseInterface
-     * @throws Throwable
-     */
     public function delete(): ResponseInterface
     {
         if (!$key = $this->getPrimaryKey()) {
