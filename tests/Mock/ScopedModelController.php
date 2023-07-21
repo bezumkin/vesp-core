@@ -10,8 +10,8 @@ use Vesp\Models\User;
 
 class ScopedModelController extends ModelController
 {
-    protected $model = User::class;
-    protected $scope = 'users';
+    protected string $model = User::class;
+    protected string|array $scope = 'users';
 
     protected function beforeSave(Model $record): ?ResponseInterface
     {

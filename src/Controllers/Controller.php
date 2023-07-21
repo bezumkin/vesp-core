@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Vesp\Controllers;
 
-use Clockwork\Clockwork;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,27 +16,19 @@ use Vesp\Services\Eloquent;
 
 abstract class Controller
 {
-    /** @var Eloquent $eloquent */
-    protected $eloquent;
+    protected Eloquent $eloquent;
 
-    /** @var RequestInterface $request */
-    protected $request;
+    protected RequestInterface $request;
 
-    /** @var ResponseInterface $response */
-    protected $response;
+    protected ResponseInterface $response;
 
-    /** @var RouteInterface $route */
-    protected $route;
+    protected RouteInterface $route;
 
-    /** @var User $user */
-    protected $user;
+    protected ?User $user = null;
 
-    /** @var Clockwork $clockwork */
-    protected $clockwork;
+    protected string|array $scope = '';
 
-    protected $scope;
-
-    private $properties = [];
+    private array $properties = [];
 
     public function __construct(Eloquent $eloquent)
     {
@@ -55,10 +46,6 @@ abstract class Controller
         $user = $request->getAttribute('user');
         if ($user instanceof User) {
             $this->user = $user;
-        }
-        $clockwork = $request->getAttribute('clockwork');
-        if ($clockwork instanceof Clockwork) {
-            $this->clockwork = $clockwork;
         }
 
         $method = strtolower($request->getMethod());
@@ -112,7 +99,7 @@ abstract class Controller
         $response = $this->response;
         if ($data !== null) {
             $body = new Stream(fopen('php://temp', 'wb'));
-            $body->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            $body->write(json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
             $response = $response->withBody($body);
         }
         if (getenv('CORS')) {
@@ -142,22 +129,12 @@ abstract class Controller
         return $this->response($data, $code, $reason);
     }
 
-    /**
-     * @param string $key
-     * @param null|mixed $default
-     *
-     * @return mixed
-     */
-    public function getProperty(string $key, $default = null)
+    public function getProperty(string $key, mixed $default = null): mixed
     {
         return $this->properties[$key] ?? $default;
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     */
-    public function setProperty(string $key, $value): void
+    public function setProperty(string $key, mixed $value): void
     {
         $this->properties[$key] = $value;
     }

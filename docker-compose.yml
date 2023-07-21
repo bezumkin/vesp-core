@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+
+  php-fpm:
+    build:
+      dockerfile: ./docker/php-fpm.dockerfile
+      args:
+        - PHP_VERSION=8.1
+    volumes:
+      - ./db:/vesp/db
+      - ./src:/vesp/src
+      - ./tests:/vesp/tests
+      - ./upload:/vesp/upload
+      - ./tmp:/vesp/tmp
+      - ./.env.dist:/vesp/.env
+      - ./vendor:/vesp/vendor
+      - ./composer.json:/vesp/composer.json
+    environment:
+      - PHP_IDE_CONFIG=serverName=VespDocker
+      - COMPOSER_ALLOW_SUPERUSER=1
+    working_dir: /vesp
+    # command: sh -c 'composer install && php-fpm'
+    command: sh -c 'composer install && composer test'

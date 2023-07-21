@@ -17,9 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class UserRole extends Model
 {
     protected $fillable = ['title', 'scope'];
-    protected $casts = [
-        'scope' => 'array',
-    ];
+    protected $casts = ['scope' => 'array'];
 
     public function users(): HasMany
     {

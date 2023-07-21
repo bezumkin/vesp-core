@@ -7,6 +7,6 @@ use Vesp\Models\User;
 
 class CompositeModelController extends ModelController
 {
-    protected $primaryKey = ['id', 'active'];
-    protected $model = User::class;
+    protected string|array $primaryKey = ['id', 'active'];
+    protected string $model = User::class;
 }

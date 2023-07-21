@@ -16,8 +16,7 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /** @var App $app */
-    protected $app;
+    protected App $app;
 
     public static function setUpBeforeClass(): void
     {
@@ -44,12 +43,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         unlink(getenv('DB_DATABASE'));
     }
 
-    /**
-     * @param string $method
-     * @param string $uri
-     * @param array $params
-     * @return ServerRequestInterface
-     */
     public function createRequest(string $method, string $uri, array $params = []): ServerRequestInterface
     {
         $method = strtoupper($method);

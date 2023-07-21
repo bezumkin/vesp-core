@@ -10,10 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class ModelController extends Controller
 {
-    /** @var string $model */
-    protected $model;
-    protected $primaryKey = 'id';
-    protected $maxLimit = 1000;
+    protected string $model;
+    protected string|array $primaryKey = 'id';
+    protected int $maxLimit = 1000;
 
     public function get(): ResponseInterface
     {
@@ -47,12 +46,10 @@ abstract class ModelController extends Controller
             $rows[] = $this->prepareRow($object);
         }
 
-        $data = $this->prepareList(
-            [
-                'total' => $total ?? count($rows),
-                'rows' => $rows,
-            ]
-        );
+        $data = $this->prepareList([
+            'total' => $total ?? count($rows),
+            'rows' => $rows,
+        ]);
 
         return $this->success($data);
     }
@@ -168,10 +165,7 @@ abstract class ModelController extends Controller
         return null;
     }
 
-    /**
-     * @return string|array|null
-     */
-    protected function getPrimaryKey()
+    protected function getPrimaryKey(): null|string|array
     {
         if (is_array($this->primaryKey)) {
             $key = [];

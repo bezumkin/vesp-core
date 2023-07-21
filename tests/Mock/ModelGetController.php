@@ -6,5 +6,5 @@ use Vesp\Models\User;
 
 class ModelGetController extends \Vesp\Controllers\ModelGetController
 {
-    protected $model = User::class;
+    protected string $model = User::class;
 }

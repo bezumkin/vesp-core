@@ -14,7 +14,7 @@ use Vesp\Models\File;
 
 class Image extends ModelGetController
 {
-    protected $model = File::class;
+    protected string $model = File::class;
 
     public function get(): ResponseInterface
     {
@@ -30,7 +30,7 @@ class Image extends ModelGetController
         }
 
         // Default processing
-        if (strpos($file->type, 'image/') !== 0) {
+        if (!str_starts_with($file->type, 'image/')) {
             return $this->response->withStatus(422);
         }
         $server = ServerFactory::create(

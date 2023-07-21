@@ -9,8 +9,7 @@ use Vesp\CoreTests\TestCase;
 class ClockworkTest extends TestCase
 {
     protected const URI = '/api/clockwork';
-    /** @var FileStorage */
-    protected $storage;
+    protected FileStorage $storage;
 
     public function testNotFoundGetFailure(): void
     {

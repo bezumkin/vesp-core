@@ -13,8 +13,8 @@ use Vesp\Services\Eloquent;
 
 class Auth
 {
-    protected $eloquent;
-    protected $model = User::class;
+    protected Eloquent $eloquent;
+    protected string $model = User::class;
 
     public function __construct(Eloquent $eloquent)
     {

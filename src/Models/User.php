@@ -25,11 +25,6 @@ class User extends Model
     protected $hidden = ['password'];
     protected $casts = ['active' => 'boolean'];
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @return mixed|void
-     */
     public function setAttribute($key, $value)
     {
         if ($key === 'password') {
@@ -47,11 +42,7 @@ class User extends Model
         return password_verify($password, $this->getAttribute('password'));
     }
 
-    /**
-     * @param array|string $scopes
-     * @return bool
-     */
-    public function hasScope($scopes): bool
+    public function hasScope(string|array $scopes): bool
     {
         if (!is_array($scopes)) {
             $scopes = [$scopes];
@@ -59,7 +50,7 @@ class User extends Model
         $user = $this->role->scope;
 
         foreach ($scopes as $scope) {
-            if (strpos($scope, '/') !== false) {
+            if (str_contains($scope, '/')) {
                 if (!in_array($scope, $user, true) && !in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
                     return false;
                 }

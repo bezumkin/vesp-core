@@ -16,11 +16,8 @@ use Vesp\Services\Eloquent;
 
 class Clockwork
 {
-    /** @var Eloquent $eloquent */
-    protected $eloquent;
-
-    /** @var Service $clockwork */
-    protected $clockwork;
+    protected Eloquent $eloquent;
+    protected Service $clockwork;
 
     public function __construct(Eloquent $eloquent, Service $clockwork)
     {

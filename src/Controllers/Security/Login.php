@@ -11,7 +11,7 @@ use Vesp\Models\User;
 
 class Login extends Controller
 {
-    protected $model = User::class;
+    protected string $model = User::class;
 
     public function post(): ResponseInterface
     {

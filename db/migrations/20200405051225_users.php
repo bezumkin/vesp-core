@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Schema\Blueprint;
 use Vesp\Services\Migration;
 
+// @codingStandardsIgnoreLine
 class Users extends Migration
 {
     public function up(): void
@@ -12,7 +13,7 @@ class Users extends Migration
         $this->schema->create(
             'user_roles',
             static function (Blueprint $table) {
-                $table->increments('id');
+                $table->id();
                 $table->string('title')->unique();
                 $table->json('scope');
                 $table->timestamps();
@@ -22,17 +23,13 @@ class Users extends Migration
         $this->schema->create(
             'users',
             static function (Blueprint $table) {
-                $table->increments('id');
+                $table->id();
                 $table->string('username')->unique();
-                $table->string('password');
-                $table->integer('role_id')->unsigned();
+                $table->string('password')->nullable();
+                $table->foreignId('role_id')
+                    ->constrained('user_roles')->cascadeOnDelete();
                 $table->boolean('active')->default(true);
                 $table->timestamps();
-
-                $table->foreign('role_id')
-                    ->references('id')->on('user_roles')
-                    ->onUpdate('restrict')
-                    ->onDelete('cascade');
             }
         );
     }

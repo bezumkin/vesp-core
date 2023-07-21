@@ -8,7 +8,7 @@ use Vesp\Models\User;
 
 class ModelController extends \Vesp\Controllers\ModelController
 {
-    protected $model = User::class;
+    protected string $model = User::class;
 
     protected function beforeSave(Model $record): ?ResponseInterface
     {

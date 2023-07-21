@@ -13,8 +13,7 @@ use Vesp\Services\Eloquent;
 
 class Clockwork extends Controller
 {
-    /** @var Service $clockwork */
-    protected $clockwork;
+    protected ?\Clockwork\Clockwork $clockwork;
 
     public function __construct(Eloquent $eloquent, Service $clockwork)
     {
@@ -39,7 +38,7 @@ class Clockwork extends Controller
             $data = $storage->latest();
         } elseif ($id) {
             $data = $storage->find($id);
-            if ($data && strpos($this->request->getUri()->getPath(), 'extended') !== false) {
+            if ($data && str_contains($this->request->getUri()->getPath(), 'extended')) {
                 $data = (new XdebugDataSource())->extend($data);
             }
         }
