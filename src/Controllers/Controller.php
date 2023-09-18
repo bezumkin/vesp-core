@@ -35,7 +35,7 @@ abstract class Controller
         $this->eloquent = $eloquent;
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
+    protected function initController(RequestInterface $request, ResponseInterface $response): void
     {
         /** @var ServerRequestInterface $request */
         $routeContext = RouteContext::fromRequest($request);
@@ -57,7 +57,13 @@ abstract class Controller
             $properties = array_merge($properties, $this->route->getArguments());
             $this->setProperties($properties);
         }
+    }
 
+    public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $this->initController($request, $response);
+
+        $method = strtolower($request->getMethod());
         if ($noScope = $this->checkScope($method)) {
             return $noScope;
         }
