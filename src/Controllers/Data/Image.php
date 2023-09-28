@@ -18,9 +18,11 @@ class Image extends ModelGetController
 
     public function get(): ResponseInterface
     {
-        $id = $this->getPrimaryKey();
+        $key = $this->getPrimaryKey();
+        $c = (new $this->model())->newQuery();
+
         /** @var File $file */
-        if (!$id || !$file = (new $this->model())->newQuery()->find($id)) {
+        if (!$key || !$file = is_array($key) ? $c->where($key)->first() : $c->find($key)) {
             return $this->response->withStatus(404);
         }
 
