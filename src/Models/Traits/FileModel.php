@@ -55,7 +55,7 @@ trait FileModel
         $type = $data->getClientMediaType();
         $title = $data->getClientFilename();
         $filename = $this->getSaveName($title, $type);
-        $path = $this->getSavePath($filename);
+        $path = $this->getSavePath($filename, $type);
 
         $this->filesystem->getBaseFilesystem()->writeStream($path . '/' . $filename, $stream);
         fclose($stream);
@@ -115,7 +115,7 @@ trait FileModel
         return $name;
     }
 
-    protected function getSavePath(string $filename): string
+    protected function getSavePath(string $filename, ?string $mime = null): string
     {
         return strlen($filename) >= 3
             ? implode('/', [$filename[0], $filename[1], $filename[2]])
