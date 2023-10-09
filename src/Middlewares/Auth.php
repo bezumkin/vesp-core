@@ -47,10 +47,10 @@ class Auth
             $token = $query['token'];
         } else {
             $cookies = $request->getCookieParams();
-            if (isset($cookies['auth._token.local'])) {
-                $token = preg_match($pcre, $cookies['auth._token.local'], $matches)
+            if ($cookie = $cookies['auth:token'] ?? $cookies['auth._token.local'] ?? '') {
+                $token = preg_match($pcre, $cookie, $matches)
                     ? $matches[1]
-                    : $cookies['auth._token.local'];
+                    : $cookie;
             }
         }
 
