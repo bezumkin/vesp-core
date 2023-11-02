@@ -47,17 +47,18 @@ trait FileModel
         }
 
         $data = $this->normalizeFile($data, $metadata);
-        $stream = $data->getStream();
-        $stream?->rewind();
-        $contents = $stream?->getContents();
-        $stream = $stream?->detach();
-
         $type = $data->getClientMediaType();
         $title = $data->getClientFilename();
+        $size = $data->getSize();
         $filename = $this->getSaveName($title, $type);
         $path = $this->getSavePath($filename, $type);
 
-        $this->filesystem->getBaseFilesystem()->writeStream($path . '/' . $filename, $stream);
+        $fs = $this->filesystem->getBaseFilesystem();
+
+        $stream = $data->getStream();
+        $stream?->rewind();
+        $stream = $stream?->detach();
+        $fs->writeStream($path . '/' . $filename, $stream);
         fclose($stream);
 
         $result = [
@@ -65,12 +66,14 @@ trait FileModel
             'path' => $path,
             'file' => $filename,
             'type' => $type,
-            'size' => strlen($contents),
+            'size' => $size,
             'metadata' => $metadata,
         ];
-        if (str_starts_with($type, 'image/') && $size = getimagesizefromstring($contents)) {
-            $result['width'] = (int)$size[0];
-            $result['height'] = (int)$size[1];
+        if ($size <= 52428800 && str_starts_with($type, 'image/') && $contents = $fs->read($path . '/' . $filename)) {
+            if ($imageSize = getimagesizefromstring($contents)) {
+                $result['width'] = (int)$imageSize[0];
+                $result['height'] = (int)$imageSize[1];
+            }
         }
 
         $this->fill($result);
