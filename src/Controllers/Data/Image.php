@@ -76,9 +76,10 @@ class Image extends ModelGetController
 
     protected function outputFile(File $file): ResponseInterface
     {
-        $this->response->getBody()->write($file->getFile());
+        $stream = new Stream($file->getFilesystem()->getBaseFilesystem()->readStream($file->getFilePathAttribute()));
 
         return $this->response
+            ->withBody($stream)
             ->withHeader('Content-Type', $file->type)
             ->withHeader('Content-Length', $file->size)
             ->withHeader('Cache-Control', 'max-age=31536000, public')
