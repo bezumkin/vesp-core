@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Vesp\Middlewares;
 
+use Illuminate\Database\Capsule\Manager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Vesp\Helpers\Jwt;
 use Vesp\Models\User;
-use Vesp\Services\Eloquent;
 
 class Auth
 {
-    protected Eloquent $eloquent;
+    protected Manager $eloquent;
     protected string $model = User::class;
 
-    public function __construct(Eloquent $eloquent)
+    public function __construct(Manager $eloquent)
     {
         $this->eloquent = $eloquent;
     }

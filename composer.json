@@ -22,10 +22,10 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
-        "firebase/php-jwt": "^v6.8.1",
+        "firebase/php-jwt": "v5.5.1|^v6.8.1",
         "illuminate/database": "^v10.15.0",
         "illuminate/events": "^v10.15.0",
-        "league/flysystem": "^3.14.0",
+        "league/flysystem": "^2.5.0|^3.14.0",
         "league/glide": "^2.3.0",
         "php-di/slim-bridge": "^3.4.0",
         "robmorgan/phinx": "^0.13.4",
@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "itsgoingd/clockwork": "^v5.1.12",
-        "phpunit/phpunit": "^10.2.6",
+        "phpunit/phpunit": "^9.6.17|^10.2.6",
         "squizlabs/php_codesniffer": "^3.7.2"
     },
     "suggest": {

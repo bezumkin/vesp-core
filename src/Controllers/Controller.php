@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vesp\Controllers;
 
+use Illuminate\Database\Capsule\Manager;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,11 +13,10 @@ use Slim\Psr7\Stream;
 use Slim\Routing\RouteContext;
 use Throwable;
 use Vesp\Models\User;
-use Vesp\Services\Eloquent;
 
 abstract class Controller
 {
-    protected Eloquent $eloquent;
+    protected Manager $eloquent;
 
     protected RequestInterface $request;
 
@@ -30,7 +30,7 @@ abstract class Controller
 
     private array $properties = [];
 
-    public function __construct(Eloquent $eloquent)
+    public function __construct(Manager $eloquent)
     {
         $this->eloquent = $eloquent;
     }
