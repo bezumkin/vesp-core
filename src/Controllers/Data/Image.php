@@ -55,8 +55,9 @@ class Image extends ModelGetController
         return $server->getImageResponse($path, $this->getProperties());
     }
 
-    protected function handleFile(File $file): ?ResponseInterface
+    protected function handleFile($file): ?ResponseInterface
     {
+        /** @var File $file */
         // SVG cannot be processed, so we output it as is
         if ($file->type === 'image/svg+xml') {
             return $this->outputFile($file);
@@ -74,8 +75,9 @@ class Image extends ModelGetController
         return null;
     }
 
-    protected function outputFile(File $file): ResponseInterface
+    protected function outputFile($file): ResponseInterface
     {
+        /** @var File $file */
         $stream = new Stream($file->getFilesystem()->getBaseFilesystem()->readStream($file->getFilePathAttribute()));
 
         return $this->response
