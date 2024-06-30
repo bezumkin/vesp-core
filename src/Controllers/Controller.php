@@ -88,11 +88,15 @@ abstract class Controller
         if (!$this->user) {
             return $this->failure('Authentication required', 401);
         }
-        $scope = $this->scope . '/' . $method;
 
-        return !$this->user->hasScope($scope)
-            ? $this->failure('You have no "' . $scope . '" scope for this action', 403)
-            : null;
+        $scopes = is_array($this->scope) ? $this->scope : [$this->scope];
+        foreach ($scopes as $scope) {
+            if ($this->user->hasScope($scope)) {
+                return null;
+            }
+        }
+
+        return $this->failure('You have no scope from required "' . implode(', ', $scopes) . '" for this action', 403);
     }
 
     public function failure($message = '', int $code = 422, string $reason = ''): ResponseInterface
