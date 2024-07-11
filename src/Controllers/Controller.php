@@ -89,11 +89,17 @@ abstract class Controller
             return $this->failure('Authentication required', 401);
         }
 
-        $scopes = is_array($this->scope) ? $this->scope : [$this->scope];
-        foreach ($scopes as $scope) {
-            if ($this->user->hasScope($scope)) {
-                return null;
+        if (is_array($this->scope)) {
+            $scopes = [];
+            foreach ($this->scope as $scope) {
+                $scopes[] = $scope . '/' . $method;
             }
+        } else {
+            $scopes = [$this->scope . '/' . $method];
+        }
+
+        if ($this->user->hasScope($scopes)) {
+            return null;
         }
 
         return $this->failure('You have no scope from required "' . implode(', ', $scopes) . '" for this action', 403);
