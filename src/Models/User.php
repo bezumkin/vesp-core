@@ -51,15 +51,15 @@ class User extends Model
 
         foreach ($scopes as $scope) {
             if (str_contains($scope, '/')) {
-                if (in_array($scope, $user, true) || in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
-                    return true;
+                if (!in_array($scope, $user, true) && !in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
+                    return false;
                 }
-            } elseif (in_array($scope, $user, true)) {
-                return true;
+            } elseif (!in_array($scope, $user, true)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public function role(): BelongsTo
