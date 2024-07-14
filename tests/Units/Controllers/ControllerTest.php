@@ -70,7 +70,7 @@ class ControllerTest extends TestCase
 
     public function testSuccess(): void
     {
-        (new User(['username' => 'username', 'password' => 'password', 'role_id' => 2]))->save();
+        (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
         $token = Jwt::makeToken(1);
 
         $request = $this->createRequest('GET', self::URI)
