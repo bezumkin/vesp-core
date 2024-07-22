@@ -66,7 +66,10 @@ class Image extends ModelGetController
         // GIFs without image manipulations should have no changes to save animation
         if ($file->type === 'image/gif') {
             $properties = $this->getProperties();
-            unset($properties['id']);
+            unset($properties['id'], $properties['uuid'], $properties['t']);
+            if (isset($properties['fm']) && $properties['fm'] === 'gif') {
+                unset($properties['fm']);
+            }
             if (empty($properties)) {
                 return $this->outputFile($file);
             }

@@ -55,7 +55,7 @@ class ImageTest extends TestCase
         $file = new File();
         $file->uploadFile(self::GIF, ['name' => 'test.gif']);
 
-        $request = $this->createRequest('GET', self::URI, ['id' => $file->id]);
+        $request = $this->createRequest('GET', self::URI, ['id' => $file->id, 'fm' => 'gif']);
         $response = $this->app->handle($request);
         $file->delete();
 
