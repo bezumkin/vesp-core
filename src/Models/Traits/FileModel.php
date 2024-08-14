@@ -22,19 +22,13 @@ use Vesp\Services\Filesystem;
  */
 trait FileModel
 {
-    protected Filesystem $filesystem;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        $this->filesystem = new Filesystem();
-    }
+    protected ?Filesystem $filesystem = null;
 
     public function getFile(): ?string
     {
         $path = $this->getFilePathAttribute();
         try {
-            return $this->filesystem->getBaseFilesystem()->read($path);
+            return $this->getFilesystem()->getBaseFilesystem()->read($path);
         } catch (FilesystemException $e) {
             return null;
         }
@@ -53,7 +47,7 @@ trait FileModel
         $filename = $this->getSaveName($title, $type);
         $path = $this->getSavePath($filename, $type);
 
-        $fs = $this->filesystem->getBaseFilesystem();
+        $fs = $this->getFilesystem()->getBaseFilesystem();
 
         $stream = $data->getStream();
         $stream?->rewind();
@@ -84,7 +78,7 @@ trait FileModel
 
     public function getFullFilePathAttribute(): string
     {
-        return $this->filesystem->getFullPath($this->getFilePathAttribute());
+        return $this->getFilesystem()->getFullPath($this->getFilePathAttribute());
     }
 
     public function getFilePathAttribute(): string
@@ -94,6 +88,10 @@ trait FileModel
 
     public function getFilesystem(): Filesystem
     {
+        if (!$this->filesystem) {
+            $this->filesystem = new Filesystem();
+        }
+
         return $this->filesystem;
     }
 
@@ -152,7 +150,7 @@ trait FileModel
     {
         $path = $this->getFilePathAttribute();
         try {
-            $this->filesystem->getBaseFilesystem()->delete($path);
+            $this->getFilesystem()->getBaseFilesystem()->delete($path);
 
             return true;
         } catch (FilesystemException $e) {
