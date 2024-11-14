@@ -30,7 +30,7 @@ abstract class ModelController extends Controller
         }
         $c = $this->beforeCount($c);
 
-        $limit = (int)$this->getProperty('limit');
+        $limit = abs((int)$this->getProperty('limit'));
         if ($this->maxLimit && (!$limit || $limit > $this->maxLimit)) {
             $limit = $this->maxLimit;
         }
