@@ -53,6 +53,17 @@ class ModelControllerTest extends TestCase
         self::assertEquals(1, json_decode($body, false)->total, $body);
     }
 
+    public function testGetListWithOffset(): void
+    {
+        (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();
+
+        $request = $this->createRequest('GET', self::URI, ['offset' => 1]);
+        $response = $this->app->handle($request);
+        $body = $response->getBody();
+
+        self::assertEquals([], json_decode($body, false)->rows, $body);
+    }
+
     public function testGet(): void
     {
         (new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]))->save();

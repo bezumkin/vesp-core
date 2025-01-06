@@ -34,9 +34,17 @@ abstract class ModelController extends Controller
         if ($this->maxLimit && (!$limit || $limit > $this->maxLimit)) {
             $limit = $this->maxLimit;
         }
-        if ($limit) {
+        $page = abs((int)$this->getProperty('page', 1));
+        $offset = abs((int)$this->getProperty('offset', ($page - 1) * $limit));
+
+        if ($offset || $limit) {
             $total = $this->getCount($c);
-            $c->forPage((int)$this->getProperty('page', 1), $limit);
+            if ($offset) {
+                $c->offset($offset);
+            }
+            if ($limit) {
+                $c->limit($limit);
+            }
         }
 
         $c = $this->afterCount($c);
