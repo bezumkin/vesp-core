@@ -4,7 +4,8 @@ services:
     build:
       dockerfile: ./docker/php-fpm.dockerfile
       args:
-        - PHP_VERSION=8.1
+        - PHP_VERSION=${PHP_VERSION:-8.1}
+        - PHP_XDEBUG=${PHP_XDEBUG:-1}
     volumes:
       - ./db:/vesp/db
       - ./src:/vesp/src
@@ -19,4 +20,4 @@ services:
       - COMPOSER_ALLOW_SUPERUSER=1
     working_dir: /vesp
     # command: sh -c 'composer install && php-fpm'
-    command: sh -c 'composer install && composer test'
+    command: sh -c 'composer update && composer test'
