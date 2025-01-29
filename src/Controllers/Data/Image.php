@@ -40,6 +40,7 @@ class Image extends ModelGetController
                 'base_url' => $this->request->getUri()->getPath(),
                 'source' => $file->getFilesystem()->getBaseFilesystem(),
                 'cache' => rtrim(getenv('CACHE_DIR') ?: sys_get_temp_dir(), '/') . '/image_cache/',
+                'driver' => getenv('IMAGE_DRIVER') ?: 'gd',
             ]
         );
 
