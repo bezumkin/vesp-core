@@ -28,7 +28,7 @@
         "league/flysystem": "^2.5.0|^3.14.0",
         "league/glide": "^2.3.0",
         "php-di/slim-bridge": "^3.4.0",
-        "robmorgan/phinx": "^0.13.4",
+        "robmorgan/phinx": "^0.16.6",
         "slim/psr7": "^1.6.0",
         "slim/slim": "^4.11.0",
         "symfony/dotenv": "^v5.4.22"

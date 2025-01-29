@@ -10,7 +10,7 @@ class MigrationTest extends TestCase
 {
     public function testInit(): void
     {
-        $migration = new Migration('test', '1.0');
+        $migration = new Migration('test', date('YmdHis'));
         $migration->init();
         self::assertInstanceOf(Builder::class, $migration->schema);
     }
