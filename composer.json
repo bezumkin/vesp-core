@@ -26,7 +26,7 @@
         "illuminate/database": "^v10.15.0|^v11.37.0",
         "illuminate/events": "^v10.15.0|^v11.37.0",
         "league/flysystem": "^2.5.0|^3.14.0",
-        "league/glide": "^2.3.0",
+        "league/glide": "^3.0.1",
         "php-di/slim-bridge": "^3.4.0",
         "robmorgan/phinx": "^0.16.6",
         "slim/psr7": "^1.6.0",

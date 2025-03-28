@@ -8,4 +8,5 @@
 /upload
 /coveralls-upload.json
 /tests/.phpunit.result.cache
+/docker-compose.override.yml
 /.env
