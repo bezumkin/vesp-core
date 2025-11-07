@@ -42,7 +42,7 @@ class User extends Model
         return password_verify($password, $this->getAttribute('password'));
     }
 
-    public function hasScope(string|array $scopes): bool
+    public function hasScope(string|array $scopes, bool $requireAll = true): bool
     {
         if (!is_array($scopes)) {
             $scopes = [$scopes];
@@ -50,16 +50,24 @@ class User extends Model
         $user = $this->role->scope;
 
         foreach ($scopes as $scope) {
-            if (str_contains($scope, '/')) {
-                if (!in_array($scope, $user, true) && !in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
+            if ($requireAll) {
+                if (str_contains($scope, '/')) {
+                    if (!in_array($scope, $user, true) && !in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
+                        return false;
+                    }
+                } elseif (!in_array($scope, $user, true)) {
                     return false;
                 }
-            } elseif (!in_array($scope, $user, true)) {
-                return false;
+            } elseif (str_contains($scope, '/')) {
+                if (in_array($scope, $user, true) || in_array(preg_replace('#/.*#', '', $scope), $user, true)) {
+                    return true;
+                }
+            } elseif (in_array($scope, $user, true)) {
+                return true;
             }
         }
 
-        return true;
+        return $requireAll === true;
     }
 
     public function role(): BelongsTo

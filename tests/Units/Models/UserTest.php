@@ -12,7 +12,7 @@ class UserTest extends TestCase
     public function testHasScope(): void
     {
         $role = new UserRole(['title' => 'test', 'scope' => ['global_scope', 'local_scope/get']]);
-        $user = new User(['username' => 'username', 'passwrod' => 'password', 'role_id' => 1]);
+        $user = new User(['username' => 'username', 'password' => 'password', 'role_id' => 1]);
         $user->setRelation('role', $role);
 
         self::assertTrue($user->hasScope('global_scope'));
@@ -20,6 +20,9 @@ class UserTest extends TestCase
         self::assertTrue($user->hasScope('local_scope/get'));
         self::assertFalse($user->hasScope('local_scope'));
         self::assertFalse($user->hasScope('local_scope/anything'));
+        self::assertFalse($user->hasScope(['global_scope', 'local_scope']));
+        self::assertTrue($user->hasScope(['wrong_scope', 'local_scope/get'], false));
+        self::assertTrue($user->hasScope(['global_scope', 'wrong_scope/get'], false));
     }
 
     public function testSetAttribute(): void
