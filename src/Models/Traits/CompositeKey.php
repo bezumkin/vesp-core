@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * @method array getKeyName
  * @method Builder newQuery
  */
 trait CompositeKey
@@ -17,10 +16,17 @@ trait CompositeKey
         return false;
     }
 
+    public function getKeyName(): string
+    {
+        $tmp = array_merge([], $this->primaryKey);
+
+        return array_pop($tmp);
+    }
+
     public function getKey(): array
     {
         $key = [];
-        foreach ($this->getKeyName() as $item) {
+        foreach ($this->primaryKey as $item) {
             $key[$item] = $this->getAttribute($item);
         }
 
@@ -40,7 +46,7 @@ trait CompositeKey
     {
         $self = new self();
         $query = $self->newQuery();
-        foreach ($self->getKeyName() as $key) {
+        foreach ($self->primaryKey as $key) {
             $query->where($key, $keys[$key]);
         }
 
