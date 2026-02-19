@@ -1,6 +1,7 @@
 services:
 
   php-fpm:
+    image: vesp-core-${PHP_VERSION:-8.4}
     build:
       dockerfile: ./docker/php-fpm.dockerfile
       args:
