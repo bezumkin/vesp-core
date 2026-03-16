@@ -53,7 +53,9 @@ trait FileModel
         $stream?->rewind();
         $stream = $stream?->detach();
         $fs->writeStream($path . '/' . $filename, $stream);
-        fclose($stream);
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
 
         $result = [
             'title' => $title,
